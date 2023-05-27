@@ -20,11 +20,12 @@ async def root():
     try:
 
         app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
+        app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
         #TODO: Health check devam et, subscribe ve publish loop dene
         # Listen for messages
         app.controller.mqtt_client.start()
         # Publish a message
-        # app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
+
     except Exception as e:
         app.controller.mqtt_client.stop()
         app.controller.logger.error(e)
@@ -37,7 +38,8 @@ async def root():
         return {"message": "Successfully Executed!"}
     finally:
         # Stop listening
-        app.controller.mqtt_client.stop()
+        #app.controller.mqtt_client.stop()
+        pass
 
 
 
