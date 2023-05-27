@@ -11,5 +11,6 @@ class Configs:
     MQTT_PORT = int(os.environ.get("MQTT_PORT"))
     MQTT_TOPIC = os.environ.get("MQTT_TOPIC")
     MQTT_CLIENT_ID = os.environ.get("MQTT_CLIENT_ID")
+    MQTT_KEEPALIVE = int(os.environ.get("MQTT_KEEPALIVE"))
 
 

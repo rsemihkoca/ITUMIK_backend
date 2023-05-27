@@ -1,13 +1,17 @@
 import time
+from datetime import datetime
+
+from colorama import Fore, Style
 import paho.mqtt.client as paho
-from paho import mqtt
 from .configs import Configs
 
-
+count = 0
 class MQTTBrokerClient:
-    def __init__(self, client_id):
+    def __init__(self, client_id, logger):
+        self.logger = logger
         self.client = paho.Client(client_id=client_id, userdata=None, protocol=paho.MQTTv31)
         self.client.on_connect = self.on_connect
+        self.client.on_ping_response = self.on_ping_response
         self.client.on_subscribe = self.on_subscribe
         self.client.on_message = self.on_message
         self.client.on_publish = self.on_publish
@@ -20,44 +24,53 @@ class MQTTBrokerClient:
     def __connect(self, username, password, cluster_url, port):
         try:
             self.client.username_pw_set(username, password)
-            self.client.connect(cluster_url, port)
+            # Keepalive: 3 sn PNG req gönderir, 3 sn içinde cevap gelmezse bağlantıyı keser
+            self.client.connect(cluster_url, port, keepalive=Configs.MQTT_KEEPALIVE)
         except Exception as e:
             raise e
 
     def on_connect(self, client, userdata, flags, rc):
-
+        global count
+        print("count: ", count)
         if rc == 0:
-            print("Connection Accepted!")
+            count+=1
+            self.logger.debug(f"Connected to MQTT Broker: {Configs.MQTT_CLUSTER_URL}:{Configs.MQTT_PORT}")
         elif rc == 1:
-            print("Connection Refused - unacceptable protocol version")
+            self.logger.error("Connection Refused - incorrect protocol version")
         elif rc == 2:
-            print("Connection Refused - identifier rejected")
+            self.logger.error("Connection Refused - invalid client identifier")
         elif rc == 3:
-            print("Connection Refused - server unavailable")
+            self.logger.error("Connection Refused - server unavailable")
         elif rc == 4:
-            print("Connection Refused - bad user name or password")
+            self.logger.error("Connection Refused - bad user name or password")
         elif rc == 5:
-            print("Connection Refused - not authorised")
+            self.logger.error("Connection Refused - not authorised")
         else:
-            print("Failed to connect, return code %d\n", rc)
+            self.logger.error(f"Failed to connect, return code {rc}")
 
     def on_publish(self, client, userdata, mid, properties=None):
-        print("mid: " + str(mid))
+        self.logger.info("mid: " + str(mid))
 
     def on_subscribe(self, client, userdata, mid, granted_qos, properties=None):
-        print("Subscribed: " + str(mid) + " " + str(granted_qos))
+        self.logger.info("Subscribed: " + str(mid) + " " + str(granted_qos))
 
     def on_message(self, client, userdata, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        self.logger.info(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def on_log(self, client, userdata, level, buf):
-        print("log: ", buf)
+        self.logger.info("log: ", buf)
+
+    def on_ping_response(self, client, userdata, flags, rc):
+        if rc == paho.MQTT_ERR_SUCCESS:
+            print("Ping successful")
+        else:
+            print("Ping failed")
 
     def subscribe(self, topic):
         self.client.subscribe(topic, qos=0)
 
     def publish(self, topic, payload):
-
+        # Publish a message to the topic TODO:TAMAMLANACAK
         msg_count = 0
         while True: # Change this to your requirement
             msg = f"messages: {msg_count}"
@@ -71,7 +84,15 @@ class MQTTBrokerClient:
             msg_count += 1
 
     def start(self):
-        self.client.loop_forever()
+        # self.client.loop_forever()
+        self.client.loop_start()
+
+        while True: # rc ?= 0
+            self.client._send_pingreq()
+            # Diğer işlemleri burada gerçekleştirin
+            print(f"{datetime.now()}: {Fore.GREEN} Consumer Health Check: OK{Style.RESET_ALL}")
+            #self.logger.info(f"datetime.now(): {Fore.GREEN}Health Check: OK{Style.RESET_ALL}")
+            time.sleep(5)
 
     def stop(self):
         self.client.disconnect()

@@ -16,3 +16,5 @@ def check_mqtt_parameters():
         raise Exception("MQTT_TOPIC is not defined!")
     if not Configs.MQTT_CLIENT_ID:
         raise Exception("MQTT_CLIENT_ID is not defined!")
+
+    return True
