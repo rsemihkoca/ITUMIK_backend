@@ -20,6 +20,7 @@ async def root():
     try:
 
         app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
+        #TODO: Health check devam et, subscribe ve publish loop dene
         # Listen for messages
         app.controller.mqtt_client.start()
         # Publish a message
