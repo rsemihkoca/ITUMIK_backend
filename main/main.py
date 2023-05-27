@@ -14,6 +14,7 @@ from lib.utils.configs import Configs
 app = create_app()
 
 client = http3.AsyncClient()
+
 @app.get("/")
 async def root():
 
