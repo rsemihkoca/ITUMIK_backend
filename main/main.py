@@ -39,7 +39,6 @@ async def root():
         return {"message": "Successfully Executed!"}
     finally:
         # Stop listening
-        #app.controller.mqtt_client.stop()
         pass
 
 
