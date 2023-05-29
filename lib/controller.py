@@ -3,12 +3,16 @@ from lib.utils.logger import CustomLogger
 from lib.utils.mqtt_client import MQTTBrokerClient
 from lib.validators.mqtt_validators import check_mqtt_parameters
 from lib.configs.constants import Constants
+from lib.configs.desk import DeskManager
+from lib.logging.custom_logging import CustomizeLogger
 
 class ClientController:
     """
     ClientManager yazılmalı !!!!!!!
     """
     def __init__(self):
-        self.logger = CustomLogger(index=Constants.MAIN_CONTROLLER)
+        # self.logger = CustomLogger(index=Constants.MAIN_CONTROLLER)
+        self.logger = CustomizeLogger.make_logger("lib/logging/logging_config.json")
+        self.desk_manager = DeskManager("floor-config.json")
         self.mqtt_client = MQTTBrokerClient(Configs.MQTT_CLIENT_ID, self.logger) if check_mqtt_parameters() else None
 

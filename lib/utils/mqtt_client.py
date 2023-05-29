@@ -3,13 +3,14 @@ from datetime import datetime
 
 from colorama import Fore, Style
 import paho.mqtt.client as paho
+import paho.mqtt.subscribeoptions as subscribeoptions
 from .configs import Configs
 
-count = 0
 class MQTTBrokerClient:
     def __init__(self, client_id, logger):
         self.logger = logger
-        self.client = paho.Client(client_id=client_id, userdata=None, protocol=paho.MQTTv31)
+        #TODO: CLEAN SESSION: Remove all subscriptions and messages when client disconnects, set True if you want to keep messages and subscriptions
+        self.client = paho.Client(client_id=client_id, clean_session=Configs.MQTT_CLEAN_SESSION, userdata=None, protocol=paho.MQTTv31)
         self.client.on_connect = self.on_connect
         # self.client.on_ping_response = self.on_ping_response
         self.client.on_subscribe = self.on_subscribe
@@ -25,15 +26,14 @@ class MQTTBrokerClient:
         try:
             self.client.username_pw_set(username, password)
             # Keepalive: 3 sn PNG req gönderir, 3 sn içinde cevap gelmezse bağlantıyı keser
+
             self.client.connect(cluster_url, port, keepalive=Configs.MQTT_KEEPALIVE)
         except Exception as e:
             raise e
 
     def on_connect(self, client, userdata, flags, rc):
-        global count
-        print("count: ", count)
+        """Callback when the device receives a CONNACK response from the MQTT bridge."""
         if rc == 0:
-            count+=1
             self.logger.info(f"Connected to MQTT Broker: {Configs.MQTT_CLUSTER_URL}:{Configs.MQTT_PORT}")
         elif rc == 1:
             self.logger.error("Connection Refused - incorrect protocol version")
@@ -49,12 +49,15 @@ class MQTTBrokerClient:
             self.logger.error(f"Failed to connect, return code {rc}")
 
     def on_publish(self, client, userdata, mid, properties=None):
+        """Callback when the device receives a PUBACK from the MQTT bridge."""
         self.logger.info("mid: " + str(mid))
 
     def on_subscribe(self, client, userdata, mid, granted_qos, properties=None):
-        self.logger.info("Subscribed: " + Configs.MQTT_TOPIC)  # str(mid) + " " + str(granted_qos)
+        """Callback when the device receives a SUBACK from the MQTT bridge."""
+        self.logger.info(f"LOG: Subscribed: {mid} {granted_qos}")
 
     def on_message(self, client, userdata, msg):
+        """Callback when the device receives a message on a subscription."""
         MessageLog = {
             "TOPIC": msg.topic,
             "QOS": msg.qos,
@@ -63,6 +66,7 @@ class MQTTBrokerClient:
         self.logger.info(MessageLog)
 
     def on_log(self, client, userdata, level, buf):
+        """Callback when the device receives a log from the MQTT bridge."""
         self.logger.info(f"LOG: {buf}")
 
     # def on_ping_response(self, client, userdata, flags, rc):
@@ -72,7 +76,14 @@ class MQTTBrokerClient:
     #         print("Ping failed")
 
     def subscribe(self, topic):
-        self.client.subscribe(topic, qos=0)
+        if isinstance(topic, str):
+            self.client.subscribe(topic, qos=0)
+        elif isinstance(topic, list):
+            for t in topic:
+                self.client.subscribe(t, qos=0)
+        else:
+            raise TypeError("Topic must be string or list of strings")
+
 
     def publish(self, topic, payload):
         # Publish a message to the topic TODO:TAMAMLANACAK

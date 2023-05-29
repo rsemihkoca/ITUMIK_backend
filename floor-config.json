@@ -1,0 +1,54 @@
+{
+    "Floor1": {
+        "Desk1": {
+            "Chair1": 0,
+            "Chair2": 0,
+            "Chair3": 0,
+            "Chair4": 0
+        },
+        "Desk2": {
+            "Chair5": 0,
+            "Chair6": 0,
+            "Chair7": 0,
+            "Chair8": 0
+        },
+        "Desk3": {
+            "Chair9": 0,
+            "Chair10": 0,
+            "Chair11": 0,
+            "Chair12": 0
+        },
+        "Desk4": {
+            "Chair13": 0,
+            "Chair14": 0,
+            "Chair15": 0,
+            "Chair16": 0
+        }
+    },
+    "Floor2": {
+        "Desk5": {
+            "Chair17": 0,
+            "Chair18": 0,
+            "Chair19": 0,
+            "Chair20": 0
+        },
+        "Desk6": {
+            "Chair21": 0,
+            "Chair22": 0,
+            "Chair23": 0,
+            "Chair24": 0
+        },
+        "Desk7": {
+            "Chair25": 0,
+            "Chair26": 0,
+            "Chair27": 0,
+            "Chair28": 0
+        },
+        "Desk8": {
+            "Chair29": 0,
+            "Chair30": 0,
+            "Chair31": 0,
+            "Chair32": 0
+        }
+    }
+}

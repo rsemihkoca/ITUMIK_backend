@@ -1,4 +1,6 @@
 import sys
+import time
+
 import http3
 import uvicorn
 sys.path.append("..")
@@ -9,6 +11,7 @@ load_dotenv(find_dotenv())
 
 from factory import create_app
 from lib.utils.configs import Configs
+from lib.controller import ClientController
 
 # Inıtialize app
 app = create_app()
@@ -17,14 +20,17 @@ client = http3.AsyncClient()
 
 @app.get("/")
 async def root():
-
     try:
 
-        app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
-        app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
-        #TODO: Health check devam et, subscribe ve publish loop dene
-        # Listen for messages
+        app.controller = ClientController()
+        app.controller.logger.info("App Started!")
+        subscription_topics = app.controller.desk_manager.get_subscribes()
         app.controller.mqtt_client.start()
+        app.controller.mqtt_client.subscribe(subscription_topics)
+
+        # app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
+        # app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
+        # Listen for messages
         # Publish a message
 
     except Exception as e:
@@ -40,6 +46,9 @@ async def root():
     finally:
         # Stop listening
         pass
+@app.get("/status")
+async def status():
+    return app.controller.desk_manager.get_status()
 
 
 
