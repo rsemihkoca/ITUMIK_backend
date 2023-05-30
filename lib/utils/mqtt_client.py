@@ -71,11 +71,17 @@ class MQTTBrokerClient:
         except json.decoder.JSONDecodeError:
             raise Exception("Payload is not JSON nor JSON-like")
         else:
+
+            if msg.topic not in self.client.subscribed_topics:
+                raise Exception("Topic is not subscribed")
+
             FLOOR, DESK = msg.topic.split("/")
             existing_keys = self.desk_manager.data[FLOOR][DESK].keys()
 
             if not existing_keys == new_keys:
                 raise Exception("Keys are not equal")
+            #TODO: check new_values are 0 or 1:
+            #check new_values are 0 or 1:
 
             # MessageLog = {
             #     "TOPIC": msg.topic,
