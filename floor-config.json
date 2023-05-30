@@ -1,21 +1,21 @@
 {
     "Floor1": {
-        "Desk1": {
-            "Chair1": 0,
-            "Chair2": 0,
-            "Chair3": 0,
-            "Chair4": 0
-        },
-        "Desk2": {
-            "Chair5": 0,
-            "Chair6": 0,
-            "Chair7": 0,
-            "Chair8": 0
-        },
-        "Desk3": {
-            "Chair9": 0,
-            "Chair10": 0,
-            "Chair11": 0,
+            "Desk1": {
+                "Chair1": 0,
+                "Chair2": 0,
+                "Chair3": 0,
+                "Chair4": 0
+                },
+            "Desk2": {
+                "Chair5": 0,
+                "Chair6": 0,
+                "Chair7": 0,
+                "Chair8": 0
+            },
+            "Desk3": {
+                "Chair9": 0,
+                "Chair10": 0,
+                "Chair11": 0,
             "Chair12": 0
         },
         "Desk4": {

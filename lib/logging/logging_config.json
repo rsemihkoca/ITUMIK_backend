@@ -5,7 +5,7 @@
     "level": "info",
     "rotation": "20 days",
     "retention": "1 months",
-    "format": "<green><level>{level: <8}</level></green> {time:YYYY-MM-DD HH:mm:ss.SSS} - <cyan>{name:25.25}</cyan>:<cyan>{function:25.25}</cyan> - {message}"
+    "format": "<green><level>{level: <8}</level></green> {time:YYYY-MM-DD HH:mm:ss.SSS} - <cyan>{name:25.25}</cyan>:<cyan>{function:15}</cyan> - LOG: {message}"
 
   }
 }

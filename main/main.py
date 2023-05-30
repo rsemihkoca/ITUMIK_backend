@@ -22,12 +22,12 @@ client = http3.AsyncClient()
 async def root():
     try:
 
-        app.controller = ClientController()
+        app.__setattr__("controller", ClientController())
         app.controller.logger.info("App Started!")
         subscription_topics = app.controller.desk_manager.get_subscribes()
         app.controller.mqtt_client.start()
         app.controller.mqtt_client.subscribe(subscription_topics)
-
+        app.controller.mqtt_client.publish("Floor1/Desk1", b'{"Chair1":0, "Chair2":0, "Chair3":0, "Chair4":0}')
         # app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
         # app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
         # Listen for messages
