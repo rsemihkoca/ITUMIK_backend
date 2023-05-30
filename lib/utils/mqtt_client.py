@@ -1,11 +1,8 @@
 import time
 import json
-from datetime import datetime
 from busypie import wait, SECOND
 
-from colorama import Fore, Style
 import paho.mqtt.client as paho
-import paho.mqtt.subscribeoptions as subscribeoptions
 from .configs import Configs
 
 class MQTTBrokerClient:
@@ -15,7 +12,6 @@ class MQTTBrokerClient:
         #TODO: CLEAN SESSION: Remove all subscriptions and messages when client disconnects, set True if you want to keep messages and subscriptions
         self.client = paho.Client(client_id=client_id, clean_session=Configs.MQTT_CLEAN_SESSION, userdata=None, protocol=paho.MQTTv31)
         self.client.on_connect = self.on_connect
-        # self.client.on_ping_response = self.on_ping_response
         self.client.on_subscribe = self.on_subscribe
         self.client.on_message = self.on_message
         self.client.on_publish = self.on_publish
@@ -95,12 +91,6 @@ class MQTTBrokerClient:
     def on_log(self, client, userdata, level, buf):
         """Callback when the device receives a log from the MQTT bridge."""
         self.logger.info(f"{buf}")
-
-    # def on_ping_response(self, client, userdata, flags, rc):
-    #     if rc == paho.MQTT_ERR_SUCCESS:
-    #         print("Ping successful")
-    #     else:
-    #         print("Ping failed")
 
     def subscribe(self, topic):
         try:
