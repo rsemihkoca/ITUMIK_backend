@@ -6,7 +6,7 @@ from lib.configs.constants import Constants, DBConstants
 class MongoDBClient:
     def __init__(self, logger):
         self.logger = logger
-        self.client = MongoClient(f"mongodb+srv://{Configs.DB_USERNAME}:{Configs.DB_PASSWORD}@clustermik.y0qcdbs.mongodb.net/")
+        self.client = MongoClient(Configs.DB_CONNECTION_STRING)
         self.__connnect()
 
         self.db = self.client[Configs.DB_NAME]

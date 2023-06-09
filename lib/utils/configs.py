@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
     DB_COLLECTION_NAME: str
+    DB_CONNECTION_STRING: str = f"mongodb+srv://{DB_USERNAME}:{DB_PASSWORD}@clustermik.y0qcdbs.mongodb.net/"
     class Config:
         env_file = ".env"
 

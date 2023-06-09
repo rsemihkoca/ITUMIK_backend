@@ -67,13 +67,13 @@ class ClientController:
         self.logger.info(f"Updated {msg.topic} with a received message")
 
     #################### MONGO ####################
-    def read_document(self, document_field_name, document_field_value):
-        # UNTESTED
-        try:
-            crud.read_document(document_field_name, document_field_value)
-        except Exception as e:
-            self.logger.error(e)
-            raise e
+    # def read_document(self, document_field_name, document_field_value):
+    #     # UNTESTED
+    #     try:
+    #         crud.read_document(document_field_name, document_field_value)
+    #     except Exception as e:
+    #         self.logger.error(e)
+    #         raise e
 
     def update_document(self, document_field_name, document_field_value, update_data):
         try:
