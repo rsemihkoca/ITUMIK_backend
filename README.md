@@ -15,7 +15,12 @@ MQTT_CLUSTER_URL =
 MQTT_PORT = 
 MQTT_CLIENT_ID = 
 MQTT_KEEPALIVE = 
+MQTT_CLEAN_SESSION = 
 
+DB_USERNAME = 
+DB_PASSWORD = 
+DB_NAME = 
+DB_COLLECTION_NAME = 
 
 unit test examples:
 Test client creation and requests
