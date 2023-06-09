@@ -17,8 +17,19 @@ MQTT_CLIENT_ID =
 MQTT_KEEPALIVE = 
 
 
+unit test examples:
+Test client creation and requests
+https://github.com/mongodb-developer/pymongo-fastapi-crud/blob/main/test_books_crud.py
+
 conda create -n <environment_name> python=3.10 pip --y
 conda activate <environment_name>
 pip install -r requirements.txt
 cd main
 python3 main.py
+
+
+TODO:
+* replace error messages with custom ones
+* example: raise CustomError(ErrorCodes.mik_ec_001, ErrorMessages.mik_ec_001_MESSAGE, 422, parameters=[Configs.DB_USERNAME, ***REMOVED***])
+
+*Hata alsa da örneğin invalid json dinlemeye devam etmeli benzer yapı on_message'de yapıldı mesaj yanlış olsa da dinlemeye devam ediyor kullanıcıyı bilgilendirmek için log atılıyor

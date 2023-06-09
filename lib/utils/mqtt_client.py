@@ -1,19 +1,16 @@
 import time
-import json
 from busypie import wait, SECOND
 
 import paho.mqtt.client as paho
 from .configs import Configs
 
 class MQTTBrokerClient:
-    def __init__(self, client_id, logger, desk_manager):
+    def __init__(self, logger):
         self.logger = logger
-        self.desk_manager = desk_manager
         #TODO: CLEAN SESSION: Remove all subscriptions and messages when client disconnects, set True if you want to keep messages and subscriptions
-        self.client = paho.Client(client_id=client_id, clean_session=Configs.MQTT_CLEAN_SESSION, userdata=None, protocol=paho.MQTTv31)
+        self.client = paho.Client(client_id=Configs.MQTT_CLIENT_ID, clean_session=Configs.MQTT_CLEAN_SESSION, userdata=None, protocol=paho.MQTTv31)
         self.client.on_connect = self.on_connect
         self.client.on_subscribe = self.on_subscribe
-        self.client.on_message = self.on_message
         self.client.on_publish = self.on_publish
         self.client.on_log = self.on_log
         self.client.tls_set(ca_certs=None, certfile=None, keyfile=None, cert_reqs=paho.ssl.CERT_REQUIRED, tls_version=paho.ssl.PROTOCOL_TLS, ciphers=None)
@@ -31,6 +28,7 @@ class MQTTBrokerClient:
             self.client.username_pw_set(username, password)
             self.client.connect(cluster_url, port, keepalive=Configs.MQTT_KEEPALIVE)
         except Exception as e:
+            self.logger.error(f"Failed to connect to MQTT Broker: {cluster_url}:{port}")
             raise e
 
     def on_connect(self, client, userdata, flags, rc):
@@ -60,34 +58,6 @@ class MQTTBrokerClient:
         """Callback when the device receives a SUBACK from the MQTT bridge."""
         self.client.suback_flag = True
 
-    def on_message(self, client, userdata, msg):
-        """Callback when the device receives a message on a subscription."""
-        try:
-            new_keys = json.loads(msg.payload).keys()
-        except json.decoder.JSONDecodeError:
-            raise Exception("Payload is not JSON nor JSON-like")
-        else:
-
-            if msg.topic not in self.client.subscribed_topics:
-                raise Exception("Topic is not subscribed")
-
-            FLOOR, DESK = msg.topic.split("/")
-            existing_keys = self.desk_manager.data[FLOOR][DESK].keys()
-
-            if not existing_keys == new_keys:
-                raise Exception("Keys are not equal")
-            #TODO: check new_values are 0 or 1:
-            #check new_values are 0 or 1:
-
-            # MessageLog = {
-            #     "TOPIC": msg.topic,
-            #     "QOS": msg.qos,
-            #     "MESSAGE": msg.payload  # .decode("utf-8")
-            # }
-            # self.logger.info(MessageLog)
-            self.desk_manager.data[FLOOR][DESK] = json.loads(msg.payload)
-            self.logger.info(f"Updated {msg.topic} with a received message")
-
     def on_log(self, client, userdata, level, buf):
         """Callback when the device receives a log from the MQTT bridge."""
         self.logger.info(f"{buf}")
@@ -106,8 +76,10 @@ class MQTTBrokerClient:
                     self.logger.info(f"Subscribed to topic: {t}")
                     self.client.subscribed_topics.append(t)
             else:
-                raise TypeError("Topic must be string or list of strings")
+                self.logger.error("Topic must be string or list of strings")
+                return
         except Exception as e:
+            self.logger.error(f"Failed to subscribe to topic: {topic}")
             raise e
 
     def publish(self, topic, payload):

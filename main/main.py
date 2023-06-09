@@ -10,7 +10,6 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 from factory import create_app
-from lib.utils.configs import Configs
 from lib.controller import ClientController
 
 # Inıtialize app
@@ -22,30 +21,35 @@ client = http3.AsyncClient()
 async def root():
     try:
 
-        app.__setattr__("controller", ClientController())
+        # SETUP
+        app.controller = ClientController()
         app.controller.logger.info("App Started!")
         subscription_topics = app.controller.desk_manager.get_subscribes()
-        app.controller.mqtt_client.start()
-        app.controller.mqtt_client.subscribe(subscription_topics)
-        app.controller.mqtt_client.publish("Floor1/Desk1", b'{"Chair1":0, "Chair2":0, "Chair3":0, "Chair4":0}')
-        # app.controller.mqtt_client.subscribe(Configs.MQTT_TOPIC)
-        # app.controller.mqtt_client.publish(Configs.MQTT_TOPIC, "Doluluk orani: %50")
-        # Listen for messages
-        # Publish a message
+
+        # Listen incoming messages
+        app.controller.start()
+
+        # Subscribe to topics
+        app.controller.subscribe(subscription_topics)
+
+        # Publish to topics
+        app.controller.publish("Floor1/Desk1", b'{"Chair1":true, "Chair2":true, "Chair3":false, "Chair4":true}')
 
     except Exception as e:
-        app.controller.mqtt_client.stop()
+        # app.controller.stop()
         app.controller.logger.error(e)
-        raise e
+        # raise e
     except KeyboardInterrupt:
-        app.controller.mqtt_client.stop()
+        # app.controller.stop()
         app.controller.logger.error("KeyboardInterrupt")
         return
     else:
         return {"message": "Successfully Executed!"}
-    finally:
-        # Stop listening
-        pass
+
+@app.on_event("shutdown")
+def shutdown_db_client():
+    app.controller.stop()
+
 @app.get("/status")
 async def status():
     return app.controller.desk_manager.get_status()
