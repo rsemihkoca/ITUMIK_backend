@@ -1,16 +1,24 @@
-import os
+from lib.utils.helper import get_topic_name
+
+from pydantic import BaseSettings
 
 
-class Configs:
-    # get defined .env variables
+class Settings(BaseSettings):
+    MQTT_USERNAME: str
+    MQTT_PASSWORD: str
+    MQTT_TOPIC: str = get_topic_name()
+    MQTT_CLUSTER_URL: str
+    MQTT_PORT: int
+    MQTT_CLIENT_ID: str
+    MQTT_KEEPALIVE: int
+    MQTT_CLEAN_SESSION: bool
 
-    # MQTT
-    MQTT_USERNAME = os.environ.get("MQTT_USERNAME")
-    MQTT_PASSWORD = os.environ.get("MQTT_PASSWORD")
-    MQTT_CLUSTER_URL = os.environ.get("MQTT_CLUSTER_URL")
-    MQTT_PORT = int(os.environ.get("MQTT_PORT"))
-    MQTT_CLIENT_ID = os.environ.get("MQTT_CLIENT_ID")
-    MQTT_KEEPALIVE = int(os.environ.get("MQTT_KEEPALIVE"))
-    MQTT_CLEAN_SESSION = bool(os.environ.get("MQTT_CLEAN_SESSION"))
+    DB_USERNAME: str
+    DB_PASSWORD: str
+    DB_NAME: str
+    DB_COLLECTION_NAME: str
+    class Config:
+        env_file = ".env"
 
 
+Configs = Settings()
