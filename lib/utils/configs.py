@@ -4,19 +4,19 @@ from pydantic import BaseSettings, Field
 import logging
 logger = logging.getLogger()  # Retrieve the root logger
 class Settings(BaseSettings):
-    MQTT_USERNAME: str
-    MQTT_PASSWORD: str
-    MQTT_TOPIC: str = get_topic_name()
-    MQTT_CLUSTER_URL: str
-    MQTT_PORT: int
-    MQTT_CLIENT_ID: str
-    MQTT_KEEPALIVE: int
-    MQTT_CLEAN_SESSION: bool
+    MQTT_USERNAME: str = Field(...)
+    MQTT_PASSWORD: str = Field(...)
+    MQTT_TOPIC: str = get_topic_name()  # from desk-config.json
+    MQTT_CLUSTER_URL: str = Field(...)
+    MQTT_PORT: int = Field(...)
+    MQTT_CLIENT_ID: str = Field(...)
+    MQTT_KEEPALIVE: int = Field(...)
+    MQTT_CLEAN_SESSION: bool = Field(...)
 
-    DB_USERNAME: str
-    DB_PASSWORD: str
-    DB_NAME: str
-    DB_COLLECTION_NAME: str
+    DB_USERNAME: str = Field(...)
+    DB_PASSWORD: str = Field(...)
+    DB_NAME: str = Field(...)
+    DB_COLLECTION_NAME: str = Field(...)
 
     class Config:
         env_file = ".env"
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
 
     @DB_CONNECTION_STRING.setter
-    def DB_CONNECTION_STRING(self, value):
+    def DB_CONNECTION_STRING(cls, value):
         logger.error("DB_CONNECTION_STRING is a read-only property and cannot be modified.")
 
 
