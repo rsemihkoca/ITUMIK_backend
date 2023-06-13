@@ -26,11 +26,14 @@ unit test examples:
 Test client creation and requests
 https://github.com/mongodb-developer/pymongo-fastapi-crud/blob/main/test_books_crud.py
 
-conda create -n <environment_name> python=3.10 pip --y
+conda create -n <environment_name> python=3.10 pip -y
 conda activate <environment_name>
-pip install -r requirements.txt
+pip install -r requirements.txt -y
 cd main
 python3 main.py
+
+for windows:
+conda create -n py310 python=3.10 ;  pip conda activate py310 ;  pip install -r requirements.txt ; cd main ; python3 main.py
 
 
 TODO:
