@@ -20,7 +20,7 @@ client = http3.AsyncClient()
 @app.get("/")
 async def root():
     try:
-        #TEST baturalo
+        #TEST baturalp22
 
         # SETUP
         app.controller = ClientController()
