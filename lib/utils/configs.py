@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     DB_COLLECTION_NAME: str = Field(...)
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
 
     # MongoDB connection string
     @property

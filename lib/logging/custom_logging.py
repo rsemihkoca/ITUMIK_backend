@@ -50,7 +50,7 @@ class CustomizeLogger:
             rotation=logging_config.get('rotation'),
             format=logging_config.get('format')
         )
-        return logger
+        return logger, logging_config
 
     @classmethod
     def customize_logging(cls,

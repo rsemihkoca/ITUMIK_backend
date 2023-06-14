@@ -119,7 +119,7 @@ class MQTTBrokerClient:
         if msgType == "SUBACK":
             if self.client.on_subscribe:
                 self.logger.info("Waiting Suback")
-                wait().at_most(3, SECOND).poll_interval(0.25, SECOND).until(lambda: self.client.suback_flag)
+                wait().at_most(5, SECOND).poll_interval(0.25, SECOND).until(lambda: self.client.suback_flag)
 
         if msgType == "PUBACK":
             if self.client.on_publish:

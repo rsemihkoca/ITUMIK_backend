@@ -1,10 +1,10 @@
 {
   "Floor1": {
     "Desk1": {
-      "Chair1": 0,
-      "Chair2": 0,
-      "Chair3": 0,
-      "Chair4": 0
+      "Chair1": false,
+      "Chair2": false,
+      "Chair3": false,
+      "Chair4": false
     }
   }
 }
