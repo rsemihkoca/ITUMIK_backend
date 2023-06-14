@@ -14,3 +14,10 @@ router = APIRouter()
 async def status(request: Request):
     status = request.app.controller.desk_manager.get_status()
     return SUCCESS_RESPONSE_DATA(status)
+
+@router.get('/custom-logger')
+def customize_logger(request: Request):
+    request.app.logger.info("Here Is Your Info Log")
+    a = 1 / 0
+    request.app.logger.error("Here Is Your Error Log")
+    return {'data': "Successfully Implemented Custom Log"}
