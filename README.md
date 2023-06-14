@@ -30,10 +30,10 @@ conda create -n <environment_name> python=3.10 pip -y
 conda activate <environment_name>
 pip install -r requirements.txt -y
 cd main
-python3 main.py
+python3 debug.py
 
 for windows:
-conda create -n py310 python=3.10 ;  pip conda activate py310 ;  pip install -r requirements.txt ; cd main ; python3 main.py
+conda create -n py310 python=3.10 ;  pip conda activate py310 ;  pip install -r requirements.txt ; cd main ; python3 debug.py
 
 
 TODO:

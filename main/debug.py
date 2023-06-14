@@ -1,8 +1,7 @@
 import sys
-import time
 
-import http3
 import uvicorn
+sys.path.append(".")
 sys.path.append("..")
 sys.path.append("../lib/")
 from dotenv import load_dotenv, find_dotenv
@@ -11,18 +10,18 @@ load_dotenv(find_dotenv())
 
 from factory import create_app
 from lib.controller import ClientController
+from lib.logging.custom_logging import CustomizeLogger
+from pathlib import Path
 
 # Inıtialize app
-app = create_app()
+log_config_path = Path(__file__).resolve().parent.parent / "lib" / "logging" / "logging_config.json"
+logger, logging_config = CustomizeLogger.make_logger(log_config_path)
+app = create_app(logger)
 
-client = http3.AsyncClient()
-
-@app.get("/")
+@app.get("/", tags=["Root"])
 async def root():
     try:
         # SETUP
-        app.controller = ClientController()
-        app.controller.logger.info("App Started!")
         subscription_topics = app.controller.desk_manager.get_subscribes()
 
         # Listen incoming messages
@@ -48,11 +47,6 @@ async def root():
 @app.on_event("shutdown")
 def shutdown_db_client():
     app.controller.stop()
-
-@app.get("/status")
-async def status():
-    return app.controller.desk_manager.get_status()
-
 
 
 if __name__ == "__main__":

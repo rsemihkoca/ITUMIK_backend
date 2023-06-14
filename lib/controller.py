@@ -16,8 +16,9 @@ class ClientController:
     """
     ClientManager yazılmalı !!!!!!!
     """
-    def __init__(self):
-        self.logger = CustomizeLogger.make_logger(log_config_path)
+    def __init__(self, logger):
+        # self.logger = CustomizeLogger.make_logger(log_config_path)
+        self.logger = logger
         self.desk_manager = DeskManager(desk_config_path)
         self.mongo_client = MongoDBClient(self.logger) if mongo_validators.check_mongodb_parameters() else None
         self.mqtt_client = MQTTBrokerClient(self.logger) if mqtt_validators.check_mqtt_parameters() else None
