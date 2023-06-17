@@ -31,7 +31,7 @@ async def root():
         app.controller.subscribe(subscription_topics)
 
         # Publish to topics
-        app.controller.publish("Floor1/Desk1", b'{"Chair1":true, "Chair2":true, "Chair3":false, "Chair4":true}')
+        app.controller.publish("Floor1/Desk1", b'{"Chair01":true, "Chair02":true, "Chair03":false, "Chair04":true}')
 
     except Exception as e:
         # app.controller.stop()

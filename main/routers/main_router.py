@@ -17,7 +17,7 @@ async def status(request: Request):
 
 @router.get('/custom-logger')
 def customize_logger(request: Request):
-    request.app.logger.info("Here Is Your Info Log")
+    request.app.controller.logger.info("Here Is Your Info Log")
     a = 1 / 0
-    request.app.logger.error("Here Is Your Error Log")
+    request.app.controller.logger.error("Here Is Your Error Log")
     return {'data': "Successfully Implemented Custom Log"}
