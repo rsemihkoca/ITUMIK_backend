@@ -1,0 +1,20 @@
+# Base image
+FROM python:3.9-slim
+
+# Çalışma dizinini oluştur
+WORKDIR /app
+
+# Gerekli dosyaları kopyala
+COPY requirements.txt .
+
+# Gerekli paketleri yükle
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Uygulama kodunu kopyala
+COPY . .
+
+# Port numarasını belirle
+EXPOSE 8008
+
+# Uygulamayı başlat
+ENTRYPOINT cd main && python3 debug.py
