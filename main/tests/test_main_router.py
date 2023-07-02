@@ -13,15 +13,18 @@ from fastapi.testclient import TestClient
 from main.factory import create_app
 from lib.controller import ClientController
 from lib.configs.data import TestPayload
-
-app = create_app()
+from lib.logging.custom_logging import CustomizeLogger
+from pathlib import Path
+# Inıtialize app
+log_config_path = Path(__file__).resolve().parent.parent.parent / "lib" / "logging" / "logging_config.json"
+logger, logging_config = CustomizeLogger.make_logger(log_config_path)
+app = create_app(logger)
 client = TestClient(app)
 class SubscribeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         global app
         # SETUP
-        app.controller = ClientController()
         app.controller.start()
 
 
