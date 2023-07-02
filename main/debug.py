@@ -7,9 +7,9 @@ sys.path.append("../lib/")
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
-
+from lib.utils.configs import Configs
+from lib.configs.constants import IDs as TCONS
 from factory import create_app
-from lib.controller import ClientController
 from lib.logging.custom_logging import CustomizeLogger
 from pathlib import Path
 
@@ -31,7 +31,7 @@ async def root():
         app.controller.subscribe(subscription_topics)
 
         # Publish to topics
-        app.controller.publish("Floor1/Desk1", b'{"Chair01":true, "Chair02":true, "Chair03":false, "Chair04":true}')
+        app.controller.publish(Configs.MQTT_TOPIC, b'{"Chair001":true, "Chair002":true, "Chair003":false, "Chair004":true}')
 
     except Exception as e:
         # app.controller.stop()
