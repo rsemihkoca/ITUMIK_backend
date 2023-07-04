@@ -33,7 +33,7 @@ cd main
 python3 debug.py
 
 for windows:
-conda create -n py310 python=3.10 ;  pip conda activate py310 ;  pip install -r requirements.txt ; cd main ; python3 debug.py
+conda create -n py310 python=3.10 ;  conda activate py310 ;  pip install -r requirements.txt ; cd main ; python3 debug.py
 
 docker build -f DockerFile -t mik_backend . && docker run --rm -i -t -p 8008:8008 mik_backend
 TODO:
