@@ -24,7 +24,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "Cloning the git repository..."
-                git 'https://github.com/your-username/your-repo.git'
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/rsemihkoca/ITUMIK_backend.git']]])
             }
         }
         stage('Set up Python environment') {
