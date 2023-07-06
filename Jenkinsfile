@@ -101,6 +101,8 @@ pipeline {
                             yes | sudo apt update
                             yes | sudo apt install python3.10
 
+                            sleep 10
+
                             # Check if Python 3.10 is now installed
                             if ! command -v python3.10 &> /dev/null
                             then
