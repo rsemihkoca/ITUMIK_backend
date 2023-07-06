@@ -85,6 +85,45 @@ pipeline {
                 }
             }
         }
+        stage('Setup Python and Run Tests') {
+            steps {
+                script {
+                    // Checking if Python 3.10 is installed and installing if it's not
+                    sh '''
+                        echo "Checking if Python 3.10 is installed..."
+                        if ! command -v python3.10 &> /dev/null
+                        then
+                            echo "Python 3.10 is not installed, installing now"
+                            sudo apt update
+                            sudo apt install software-properties-common
+                            sudo add-apt-repository ppa:deadsnakes/ppa
+                            sudo apt update
+                            sudo apt install python3.10
+
+                            # Check if Python 3.10 is now installed
+                            if ! command -v python3.10 &> /dev/null
+                            then
+                                echo "Failed to install Python 3.10"
+                                exit 1
+                            fi
+
+                        else
+                            echo "Python 3.10 is already installed"
+                        fi
+                    '''
+
+                    // Running the unit tests
+                    def testResult = sh(script: 'python3.10 -m pytest', returnStatus: true)
+
+                    // Check if the tests passed
+                    if (testResult != 0) {
+                        error("Unit tests failed. Aborting the build.")
+                    }
+
+                    echo 'Unit tests passed.'
+                }
+            }
+        }
 
         stage('Build') {
             steps {
