@@ -19,15 +19,6 @@ pipeline {
         )
     }
     stages {
-        stage('Configure Sudoers') {
-                steps {
-                    sh '''
-                        echo "${USER} ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
-                    '''
-                }
-            }
-
-
         stage('Parse Payload') {
             steps {
                 script {
