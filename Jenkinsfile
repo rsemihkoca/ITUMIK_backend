@@ -92,7 +92,7 @@ pipeline {
                     // Checking if Python 3.10 is installed and installing if it's not
                     sh '''
                         echo "Checking if Python 3.10 is installed..."
-                        if ! command -v python3.10 &> /dev/null
+                        if ! command -v python3.10
                         then
                             echo "Python 3.10 is not installed, installing now"
                             yes | sudo apt -qq update
@@ -103,7 +103,7 @@ pipeline {
 
 
                             # Check if Python 3.10 is now installed
-                            if ! command -v python3.10 &> /dev/null
+                            if ! command -v python3.10
                             then
                                 echo "Failed to install Python 3.10"
                                 exit 1
