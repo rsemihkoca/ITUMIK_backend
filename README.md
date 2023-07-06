@@ -43,4 +43,4 @@ TODO:
 
 ***JENKINS***
 JENKINS'teki user'ın çalıştığı makinede sudo yetkisi olmalı.
-echo "${USER} ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
