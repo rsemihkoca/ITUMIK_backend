@@ -100,7 +100,7 @@ pipeline {
                             yes | sudo add-apt-repository ppa:deadsnakes/ppa
                             yes | sudo apt -qq update
                             yes | sudo apt -qq install python3.10
-
+                            yes | sudo apt -qq install python3.10 python3.10-venv
 
                             # Check if Python 3.10 is now installed
                             if ! command -v python3.10
