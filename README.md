@@ -38,3 +38,9 @@ TODO:
 * example: raise CustomError(ErrorCodes.mik_ec_001, ErrorMessages.mik_ec_001_MESSAGE, 422, parameters=[Configs.DB_USERNAME, "python_client"])
 
 *Hata alsa da örneğin invalid json dinlemeye devam etmeli benzer yapı on_message'de yapıldı mesaj yanlış olsa da dinlemeye devam ediyor kullanıcıyı bilgilendirmek için log atılıyor
+
+
+
+***JENKINS***
+JENKINS'teki user'ın çalıştığı makinede sudo yetkisi olmalı.
+echo "${USER} ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
