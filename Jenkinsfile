@@ -85,7 +85,8 @@ pipeline {
                 }
             }
         }
-        stage('Setup Python and Run Tests') {
+
+        stage('Setup Python') {
             steps {
                 script {
                     // Checking if Python 3.10 is installed and installing if it's not
@@ -111,16 +112,43 @@ pipeline {
                             echo "Python 3.10 is already installed"
                         fi
                     '''
+                }
+            }
 
-                    // Running the unit tests
-                    def testResult = sh(script: 'python3.10 -m pytest', returnStatus: true)
+        }
 
-                    // Check if the tests passed
-                    if (testResult != 0) {
-                        error("Unit tests failed. Aborting the build.")
+
+        stage('Setup environment') {
+            steps {
+                // Set up the Python environment
+                sh '''
+                python3 -m venv .py310
+                source .py310/bin/activate
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
+
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    // Activate the Python virtual environment
+                    sh 'source .py310/bin/activate'
+
+                    // Run the unit tests
+                    def unitTestResult = sh returnStatus: true, script: 'python -m unittest discover -s tests -p "test_*.py"'
+
+                    // Log the unit test output
+                    echo "Unit Test Output:\n${unitTestResult}"
+
+                    // Check the unit test result
+                    if (unitTestResult != 0) {
+                        error('Unit tests failed. Exiting Jenkins pipeline.')
                     }
 
                     echo 'Unit tests passed.'
+
                 }
             }
         }
