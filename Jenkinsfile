@@ -95,11 +95,11 @@ pipeline {
                         if ! command -v python3.10 &> /dev/null
                         then
                             echo "Python 3.10 is not installed, installing now"
-                            sudo apt update
-                            sudo apt install software-properties-common
-                            sudo add-apt-repository ppa:deadsnakes/ppa
-                            sudo apt update
-                            sudo apt install python3.10
+                            yes | sudo apt update
+                            yes | sudo apt install software-properties-common
+                            yes | sudo add-apt-repository ppa:deadsnakes/ppa
+                            yes | sudo apt update
+                            yes | sudo apt install python3.10
 
                             # Check if Python 3.10 is now installed
                             if ! command -v python3.10 &> /dev/null
