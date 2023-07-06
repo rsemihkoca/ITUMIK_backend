@@ -22,7 +22,7 @@ pipeline {
         stage('Configure Sudoers') {
                 steps {
                     sh '''
-                        echo "${USER} ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+                        echo "${USER} ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
                     '''
                 }
             }
