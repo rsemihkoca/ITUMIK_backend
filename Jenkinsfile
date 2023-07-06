@@ -97,7 +97,7 @@ pipeline {
                             echo "Python 3.10 is not installed, installing now"
                             yes | sudo apt -qq update
                             yes | sudo apt -qq install software-properties-common
-                            yes | sudo add-apt-repository -qq ppa:deadsnakes/ppa
+                            yes | sudo add-apt-repository ppa:deadsnakes/ppa
                             yes | sudo apt -qq update
                             yes | sudo apt -qq install python3.10
 
