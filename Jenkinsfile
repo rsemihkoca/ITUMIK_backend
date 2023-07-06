@@ -101,8 +101,6 @@ pipeline {
                             yes | sudo apt -qq update
                             yes | sudo apt -qq install python3.10
 
-                            # Reload the shell environment
-                            source ~/.bashrc
 
                             # Check if Python 3.10 is now installed
                             if ! command -v python3.10 &> /dev/null
