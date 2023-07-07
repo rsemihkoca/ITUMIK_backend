@@ -163,22 +163,28 @@ pipeline {
                 script {
 
                     def currentDir = pwd()
+                    def repoFolderName = env.REPO_FOLDER_NAME
                     echo "Current working directory: $currentDir"
-                    // Activate the Python virtual environment
-                    sh '. /py310/bin/activate'
 
-                    // Run the unit tests
-                    def unitTestResult = sh returnStatus: true, script: 'pytest *'
+                    // Set up the Python environment
+                    dir("$repoFolderName") {
+                        // Activate the Python virtual environment
+                        sh '. /py310/bin/activate'
 
-                    // Log the unit test output
-                    echo "Unit Test Output:\n${unitTestResult}"
+                        // Run the unit tests
+                        def unitTestResult = sh returnStatus: true, script: 'pytest *'
 
-                    // Check the unit test result
-                    if (unitTestResult != 0) {
-                        error('Unit tests failed. Exiting Jenkins pipeline.')
+                        // Log the unit test output
+                        echo "Unit Test Output:\n${unitTestResult}"
+
+                        // Check the unit test result
+                        if (unitTestResult != 0) {
+                            error('Unit tests failed. Exiting Jenkins pipeline.')
+                        }
+
+                        echo 'Unit tests passed.'
                     }
 
-                    echo 'Unit tests passed.'
 
                 }
             }
