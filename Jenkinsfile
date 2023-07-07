@@ -139,10 +139,10 @@ pipeline {
             steps {
                 script {
                     // Activate the Python virtual environment
-                    sh 'source .py310/bin/activate'
+                    sh '. ~/py310/bin/activate'
 
                     // Run the unit tests
-                    def unitTestResult = sh returnStatus: true, script: 'python -m unittest discover -s tests -p "test_*.py"'
+                    def unitTestResult = sh returnStatus: true, script: 'python3 -m unittest discover -s tests -p "test_*.py"'
 
                     // Log the unit test output
                     echo "Unit Test Output:\n${unitTestResult}"
