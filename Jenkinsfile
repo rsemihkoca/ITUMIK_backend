@@ -169,24 +169,23 @@ pipeline {
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
-                        echo "PATH: ${env.PATH}"
 
-                        sh '. py310/bin/activate'
-
-                        // Run the unit tests
-                        def unitTestResult = sh returnStatus: true, script: 'pytest test_*.py'
-
-                        // Log the unit test output
-                        echo "Unit Test Output:\n${unitTestResult}"
-
-                        // Check the unit test result
-                        if (unitTestResult != 0) {
-                            error('Unit tests failed. Exiting Jenkins pipeline.')
-                        }
-
-                        echo 'Unit tests passed.'
+                       sh '''#!/bin/bash
+                        . py310/bin/activate
+                        cd main/tests && python3 -m \
+                        pytest * -v -o junit_family=xunit1 --cov=../../main \
+                        --cov-report xml:../test-results/coverage-cpu.xml --cov-report html:../test-results/cov_html-cpu \
+                        --junitxml=../test-results/results-cpu.xml
+                        '''
                     }
                 }
+            }
+        }
+
+        stage('Post Test Actions') {
+            steps {
+                junit '../test-results/results-cpu.xml'
+                cobertura coberturaReportFile: '../test-results/coverage-cpu.xml'
             }
         }
 
