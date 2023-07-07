@@ -169,9 +169,7 @@ pipeline {
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
-                        echo "PATH:"
-
-                        echo $PATH
+                        echo "PATH: ${env.PATH}"
 
                         sh '. py310/bin/activate'
 
