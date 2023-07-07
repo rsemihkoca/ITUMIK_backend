@@ -169,7 +169,7 @@ pipeline {
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
-                        sh '. /py310/bin/activate'
+                        sh '. py310/bin/activate'
 
                         // Run the unit tests
                         def unitTestResult = sh returnStatus: true, script: 'pytest *'
