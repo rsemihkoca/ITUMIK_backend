@@ -165,7 +165,7 @@ pipeline {
                 script {
                     def repoFolderName = env.REPO_FOLDER_NAME
                     def pythonPath = "${env.WORKSPACE}/${repoFolderName}"
-                    def venvDir = "$repoFolderName/py310/bin/activate"
+                    def venvDir = "py310/bin/activate"
 
                     echo "Current working directory: ${env.WORKSPACE}"
 
