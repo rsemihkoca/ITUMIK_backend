@@ -141,15 +141,18 @@ pipeline {
             steps {
                 script{
                     def currentDir = pwd()
+                    def repoFolderName = env.REPO_FOLDER_NAME
                     echo "Current working directory: $currentDir"
-                // Set up the Python environment
-                    sh '''
-                    python3 -m ensurepip --upgrade
-                    mkdir -p py310
-                    python3 -m venv py310
-                    . /py310/bin/activate
-                    pip install -r requirements.txt
-                    '''
+                    // Set up the Python environment
+                    dir("$repoFolderName") {
+                        sh '''
+                        python3 -m ensurepip --upgrade
+                        mkdir -p py310
+                        python3 -m venv py310
+                        . py310/bin/activate
+                        pip install -r requirements.txt
+                        '''
+                    }
                 }
             }
         }
