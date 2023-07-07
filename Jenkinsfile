@@ -101,6 +101,9 @@ pipeline {
                             yes | sudo apt -qq update
                             yes | sudo apt -qq install python3.10
                             yes | sudo apt -qq install python3.10 python3.10-venv
+                            sudo ln -sf /usr/bin/python3.10 /usr/bin/python3
+                            echo "Installed python version: "
+                            python3 --version
 
                             # Check if Python 3.10 is now installed
                             if ! command -v python3.10
