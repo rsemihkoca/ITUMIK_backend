@@ -173,7 +173,7 @@ pipeline {
                         // Activate the Python virtual environment and run tests
                         withEnv(["PYTHONPATH=${pythonPath}"]) {
                             sh """#!/bin/bash
-                                source ${venvDir}
+                                . ${venvDir}
                                 cd main/tests
                                 python3 -m pytest * -v -o junit_family=xunit1 \
                                 --cov=../../main --cov-report xml:../test-results/coverage-cpu.xml \
