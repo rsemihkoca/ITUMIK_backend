@@ -161,6 +161,10 @@ pipeline {
 
 
         stage('Run Unit Tests') {
+
+            environment {
+                PYTHONPATH = "${WORKSPACE}/$repoFolderName"
+            }
             steps {
                 script {
 
@@ -173,7 +177,6 @@ pipeline {
                         // Activate the Python virtual environment
 
                        sh '''#!/bin/bash
-                        export PYTHONPATH="${WORKSPACE}/$repoFolderName" # add your Python path environment variable here
                         . py310/bin/activate
                         cd main/tests && python3 -m \
                         pytest * -v -o junit_family=xunit1 --cov=../../main \
