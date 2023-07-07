@@ -142,7 +142,7 @@ pipeline {
                     sh '. ~/py310/bin/activate'
 
                     // Run the unit tests
-                    def unitTestResult = sh returnStatus: true, script: 'python3 -m unittest discover -s tests -p "test_*.py"'
+                    def unitTestResult = sh returnStatus: true, script: 'python3 -m pytest *'
 
                     // Log the unit test output
                     echo "Unit Test Output:\n${unitTestResult}"
