@@ -80,7 +80,7 @@ pipeline {
                         sh "mkdir -p $repoFolderName"
 
                         // change the current directory to the new directory
-                        dir("$repoName") {
+                        dir("$repoFolderName") {
                             withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
                                 checkout([
                                     $class: 'GitSCM',
