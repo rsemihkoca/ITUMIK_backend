@@ -145,9 +145,9 @@ pipeline {
                 // Set up the Python environment
                     sh '''
                     python3 -m ensurepip --upgrade
-                    mkdir -p ~/py310
-                    python3 -m venv ~/py310
-                    . ~/py310/bin/activate
+                    mkdir -p py310
+                    python3 -m venv py310
+                    . /py310/bin/activate
                     pip install -r requirements.txt
                     '''
                 }
@@ -162,7 +162,7 @@ pipeline {
                     def currentDir = pwd()
                     echo "Current working directory: $currentDir"
                     // Activate the Python virtual environment
-                    sh '. ~/py310/bin/activate'
+                    sh '. /py310/bin/activate'
 
                     // Run the unit tests
                     def unitTestResult = sh returnStatus: true, script: 'pytest *'
