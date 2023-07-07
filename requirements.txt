@@ -9,3 +9,4 @@ pymongo
 pytest
 pytest-cov
 starlette
+httpx
