@@ -167,7 +167,7 @@ pipeline {
                     def currentDir = pwd()
                     def repoFolderName = env.REPO_FOLDER_NAME
                     echo "Current working directory: $currentDir"
-
+                    echo "WORKSPACE: " ${WORKSPACE}
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
