@@ -127,7 +127,6 @@ pipeline {
                 // Set up the Python environment
                 sh '''
                 python3 -m ensurepip --upgrade
-                pip install pytest
                 mkdir -p ~/py310
                 python3 -m venv ~/py310
                 . ~/py310/bin/activate
