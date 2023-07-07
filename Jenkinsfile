@@ -1,7 +1,9 @@
 #!groovy
 pipeline {
     agent any
-
+    environment {
+        PIP_REQUIRE_VIRTUALENV = '1'
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
