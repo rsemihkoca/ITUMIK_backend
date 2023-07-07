@@ -19,6 +19,16 @@ pipeline {
         )
     }
     stages {
+
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    // Delete the workspace directory
+                    deleteDir()
+                }
+            }
+        }
+
         stage('Parse Payload') {
             steps {
                 script {
@@ -49,6 +59,7 @@ pipeline {
                     env.AUTHOR_LOGIN = json.release.author.login
                     env.REPO_FULL_NAME = json.repository.full_name
                     env.BRANCH_NAME = json.release.target_commitish
+                    env.REPO_FOLDER_NAME = json.repository.name
 
                 }
             }
@@ -60,22 +71,26 @@ pipeline {
                     def cloneUrl = env.CLONE_URL
                     def targetBranch = env.BRANCH_NAME
                     def releaseUrl = env.RELEASE_URL
-
+                    def repoFolderName = env.REPO_FOLDER_NAME
                     echo 'Clone URL:'+ cloneUrl
                     echo 'Release URL:'+ releaseUrl
 
                     if (releaseUrl) {
                         echo "Checking out repository from clone URL: $cloneUrl"
+                        sh "mkdir -p $repoFolderName"
 
-                        withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
-                            checkout([
-                                $class: 'GitSCM',
-                                branches: [[name: "*/$targetBranch"]],
-                                doGenerateSubmoduleConfigurations: false,
-                                extensions: [],
-                                submoduleCfg: [],
-                                userRemoteConfigs: [[url: cloneUrl]]
-                            ])
+                        // change the current directory to the new directory
+                        dir("$repoName") {
+                            withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
+                                checkout([
+                                    $class: 'GitSCM',
+                                    branches: [[name: "*/$targetBranch"]],
+                                    doGenerateSubmoduleConfigurations: false,
+                                    extensions: [],
+                                    submoduleCfg: [],
+                                    userRemoteConfigs: [[url: cloneUrl]]
+                                ])
+                            }
                         }
 
                         echo 'Repository checked out successfully.'
