@@ -1,6 +1,6 @@
 from lib.utils.helper import get_topic_name
 
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings, Field
 import logging
 logger = logging.getLogger()  # Retrieve the root logger
 class Settings(BaseSettings):
