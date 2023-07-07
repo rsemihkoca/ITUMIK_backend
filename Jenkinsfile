@@ -161,28 +161,26 @@ pipeline {
 
 
         stage('Run Unit Tests') {
-
-            environment {
-                PYTHONPATH = "${WORKSPACE}/$repoFolderName"
-            }
             steps {
                 script {
-
-                    def currentDir = pwd()
                     def repoFolderName = env.REPO_FOLDER_NAME
-                    echo "Current working directory: $currentDir"
+                    def pythonPath = "${env.WORKSPACE}/${repoFolderName}"
+                    def venvDir = "$repoFolderName/py310/bin/activate"
 
-                    // Set up the Python environment
-                    dir("$repoFolderName") {
-                        // Activate the Python virtual environment
+                    echo "Current working directory: ${env.WORKSPACE}"
 
-                       sh '''#!/bin/bash
-                        . py310/bin/activate
-                        cd main/tests && python3 -m \
-                        pytest * -v -o junit_family=xunit1 --cov=../../main \
-                        --cov-report xml:../test-results/coverage-cpu.xml --cov-report html:../test-results/cov_html-cpu \
-                        --junitxml=../test-results/results-cpu.xml
-                        '''
+                    dir(repoFolderName) {
+                        // Activate the Python virtual environment and run tests
+                        withEnv(["PYTHONPATH=${pythonPath}"]) {
+                            sh """#!/bin/bash
+                                source ${venvDir}
+                                cd main/tests
+                                python3 -m pytest * -v -o junit_family=xunit1 \
+                                --cov=../../main --cov-report xml:../test-results/coverage-cpu.xml \
+                                --cov-report html:../test-results/cov_html-cpu \
+                                --junitxml=../test-results/results-cpu.xml
+                            """
+                        }
                     }
                 }
             }
