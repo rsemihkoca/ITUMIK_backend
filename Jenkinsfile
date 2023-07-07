@@ -139,10 +139,11 @@ pipeline {
 
         stage('Setup environment') {
             steps {
+                script{
+                    def currentDir = pwd()
+                    echo "Current working directory: $currentDir"
+                }
                 // Set up the Python environment
-                def currentDir = pwd()
-                echo "Current working directory: $currentDir"
-
                 //                 sh '''
                 //                 python3 -m ensurepip --upgrade
                 //                 mkdir -p ~/py310
