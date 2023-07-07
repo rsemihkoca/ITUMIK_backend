@@ -184,8 +184,6 @@ pipeline {
 
                         echo 'Unit tests passed.'
                     }
-
-
                 }
             }
         }
