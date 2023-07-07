@@ -1,7 +1,6 @@
 paho-mqtt
 busypie
 loguru
-http3
 uvicorn
 python-dotenv
 fastapi
@@ -10,4 +9,3 @@ pymongo
 pytest
 pytest-cov
 starlette
-httpx
