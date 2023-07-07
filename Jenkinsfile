@@ -126,8 +126,9 @@ pipeline {
             steps {
                 // Set up the Python environment
                 sh '''
-                python3 -m venv .py310
-                source .py310/bin/activate
+                mkdir ~/py310
+                python3 -m venv ~/py310
+                . ~/py310/bin/activate
                 pip install -r requirements.txt
                 '''
             }
