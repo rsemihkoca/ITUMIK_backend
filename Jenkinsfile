@@ -167,12 +167,13 @@ pipeline {
                     def currentDir = pwd()
                     def repoFolderName = env.REPO_FOLDER_NAME
                     echo "Current working directory: $currentDir"
-                    echo "WORKSPACE: " ${env.WORKSPACE}
+
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
 
                        sh '''#!/bin/bash
+                        export PYTHONPATH="${WORKSPACE}/$repoFolderName" # add your Python path environment variable here
                         . py310/bin/activate
                         cd main/tests && python3 -m \
                         pytest * -v -o junit_family=xunit1 --cov=../../main \
