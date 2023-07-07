@@ -142,15 +142,15 @@ pipeline {
                 script{
                     def currentDir = pwd()
                     echo "Current working directory: $currentDir"
-                }
                 // Set up the Python environment
-                //                 sh '''
-                //                 python3 -m ensurepip --upgrade
-                //                 mkdir -p ~/py310
-                //                 python3 -m venv ~/py310
-                //                 . ~/py310/bin/activate
-                //                 pip install -r requirements.txt
-                //                 '''
+                    sh '''
+                    python3 -m ensurepip --upgrade
+                    mkdir -p ~/py310
+                    python3 -m venv ~/py310
+                    . ~/py310/bin/activate
+                    pip install -r requirements.txt
+                    '''
+                }
             }
         }
 
@@ -158,6 +158,9 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
+
+                    def currentDir = pwd()
+                    echo "Current working directory: $currentDir"
                     // Activate the Python virtual environment
                     sh '. ~/py310/bin/activate'
 
