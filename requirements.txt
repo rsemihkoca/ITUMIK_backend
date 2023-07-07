@@ -4,7 +4,7 @@ loguru
 uvicorn
 python-dotenv
 fastapi
-pydantic
+pydantic==1.10.8
 pymongo
 pytest
 pytest-cov
