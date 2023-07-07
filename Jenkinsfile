@@ -169,6 +169,10 @@ pipeline {
                     // Set up the Python environment
                     dir("$repoFolderName") {
                         // Activate the Python virtual environment
+                        echo "PATH:"
+
+                        echo $PATH
+
                         sh '. py310/bin/activate'
 
                         // Run the unit tests
