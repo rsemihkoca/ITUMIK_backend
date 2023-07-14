@@ -112,17 +112,21 @@ pipeline {
                         if ! command -v python3.10
                         then
                             echo "Python 3.10 is not installed, installing now"
-                            curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-                            export PATH="$HOME/.pyenv/bin:$PATH"
-                            eval "$(pyenv init -)"
-                            eval "$(pyenv virtualenv-init -)"
-                            pyenv install 3.10.0
-                            pyenv global 3.10.0
+                            apt-get update
+                            apt-get install -y build-essential libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev \
+                                libreadline-dev libsqlite3-dev libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev \
+                                liblzma-dev libffi-dev libc6-dev tk-dev
+                            wget https://www.python.org/ftp/python/3.10.0/Python-3.10.0.tgz
+                            tar xvf Python-3.10.0.tgz
+                            cd Python-3.10.0
+                            ./configure --prefix=$HOME/python3.10 --enable-optimizations
+                            make
+                            make install
                             echo "Installed python version: "
-                            python3 --version
+                            $HOME/python3.10/bin/python3.10 --version
 
                             # Check if Python 3.10 is now installed
-                            if ! command -v python3.10
+                            if ! command -v $HOME/python3.10/bin/python3.10
                             then
                                 echo "Failed to install Python 3.10"
                                 exit 1
