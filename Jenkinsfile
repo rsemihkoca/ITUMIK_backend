@@ -112,11 +112,12 @@ pipeline {
                         if ! command -v python3.10
                         then
                             echo "Python 3.10 is not installed, installing now"
-                            yes | apt -qq install software-properties-common
-                            yes | add-apt-repository ppa:deadsnakes/ppa
-                            yes | apt -qq install python3.10
-                            yes | apt -qq install python3.10 python3.10-venv
-                            ln -sf /usr/bin/python3.10 /usr/bin/python3
+                            curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+                            export PATH="$HOME/.pyenv/bin:$PATH"
+                            eval "$(pyenv init -)"
+                            eval "$(pyenv virtualenv-init -)"
+                            pyenv install 3.10.0
+                            pyenv global 3.10.0
                             echo "Installed python version: "
                             python3 --version
 
@@ -133,7 +134,6 @@ pipeline {
                     '''
                 }
             }
-
         }
 
 
