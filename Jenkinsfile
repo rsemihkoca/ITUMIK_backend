@@ -112,13 +112,13 @@ pipeline {
                         if ! command -v python3.10
                         then
                             echo "Python 3.10 is not installed, installing now"
-                            yes | sudo apt -qq update
-                            yes | sudo apt -qq install software-properties-common
-                            yes | sudo add-apt-repository ppa:deadsnakes/ppa
-                            yes | sudo apt -qq update
-                            yes | sudo apt -qq install python3.10
-                            yes | sudo apt -qq install python3.10 python3.10-venv
-                            sudo ln -sf /usr/bin/python3.10 /usr/bin/python3
+                            yes | apt -qq update
+                            yes | apt -qq install software-properties-common
+                            yes | add-apt-repository ppa:deadsnakes/ppa
+                            yes | apt -qq update
+                            yes | apt -qq install python3.10
+                            yes | apt -qq install python3.10 python3.10-venv
+                            ln -sf /usr/bin/python3.10 /usr/bin/python3
                             echo "Installed python version: "
                             python3 --version
 
