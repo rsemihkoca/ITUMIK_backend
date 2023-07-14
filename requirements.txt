@@ -10,3 +10,4 @@ pytest
 pytest-cov
 starlette
 httpx
+pyenv
