@@ -9,3 +9,6 @@ def get_topic_name():
     desk_key = list(data[floor_key].keys())[0]
     mqtt_topic = f"{floor_key}/{desk_key}"
     return mqtt_topic
+
+def str_to_bool(s):
+    print(s)
