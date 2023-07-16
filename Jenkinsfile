@@ -1,13 +1,19 @@
 #!groovy
 pipeline {
-    agent any
     environment {
         PIP_REQUIRE_VIRTUALENV = '1'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
-
+    agent {
+        dockerfile {
+            // Use the specified Dockerfile for the agent
+            filename 'Dockerfile'
+            // Mount the Python package dependencies directory as a Docker volume
+            args '-v $HOME/.cache/pip:/root/.cache/pip'
+        }
+    }
     triggers {
         GenericTrigger(
             genericVariables: [
@@ -21,16 +27,6 @@ pipeline {
         )
     }
     stages {
-
-        stage('Clean Workspace') {
-            steps {
-                script {
-                    // Delete the workspace directory
-                    deleteDir()
-                }
-            }
-        }
-
         stage('Parse Payload') {
             steps {
                 script {
@@ -66,3 +62,42 @@ pipeline {
                 }
             }
         }
+
+        stage('Build') {
+            steps {
+                sh 'docker build -t myimage:intermediate .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'docker run --rm myimage:intermediate \
+                    python3 -m pytest * -v -o junit_family=xunit1 \
+                    --cov=../../main --cov-report xml:../test-results/coverage-cpu.xml \
+                    --cov-report html:../test-results/cov_html-cpu \
+                    --junitxml=../test-results/results-cpu.xml'
+            }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                junit 'test-results/results-cpu.xml'
+            }
+        }
+
+        stage('Publish Coverage Report') {
+            steps {
+                cobertura autoUpdateHealth: false, autoUpdateStability: false, \
+                    coberturaReportFile: 'test-results/coverage-cpu.xml', \
+                    failUnhealthy: false, failUnstable: false
+            }
+        }
+
+        stage('Finalize') {
+            steps {
+                sh 'docker build -t myimage:final .'
+                // Additional steps after building the final image if needed
+            }
+        }
+    }
+}
