@@ -16,66 +16,18 @@ COPY . .
 # Test stage
 FROM builder as tester
 
-# Define global ARG variables
-ARG DB_COLLECTION_NAME
-ARG DB_NAME
-ARG DB_PASSWORD
-ARG DB_USERNAME
-ARG MQTT_CLEAN_SESSION
-ARG MQTT_CLIENT_ID
-ARG MQTT_CLUSTER_URL
-ARG MQTT_KEEPALIVE
-ARG MQTT_PASSWORD
-ARG MQTT_PORT
-ARG MQTT_USERNAME
+COPY --from=builder /app .
 
-# Set environment variables using ARG and ENV
-ENV DB_COLLECTION_NAME=$DB_COLLECTION_NAME
-ENV DB_NAME=$DB_NAME
-ENV DB_PASSWORD=$DB_PASSWORD
-ENV DB_USERNAME=$DB_USERNAME
-ENV MQTT_CLEAN_SESSION=$MQTT_CLEAN_SESSION
-ENV MQTT_CLIENT_ID=$MQTT_CLIENT_ID
-ENV MQTT_CLUSTER_URL=$MQTT_CLUSTER_URL
-ENV MQTT_KEEPALIVE=$MQTT_KEEPALIVE
-ENV MQTT_PASSWORD=$MQTT_PASSWORD
-ENV MQTT_PORT=$MQTT_PORT
-ENV MQTT_USERNAME=$MQTT_USERNAME
-ENV PIP_REQUIRE_VIRTUALENV=True
-ENV PYTHONUNBUFFERED=1
+WORKDIR /app/main
 
+# Run tests
+#CMD ["pytest", "*"]
 
-# Run the tests
-#RUN python3 -m pytest * -v -o junit_family=xunit1 \
+#RUN python3 -m pytest *
+#-v -o junit_family=xunit1 \
 #    --cov=../../main --cov-report xml:../test-results/coverage-cpu.xml \
 #    --cov-report html:../test-results/cov_html-cpu \
-#    --junitxml=../test-results/results-cpu.xml
-## Final stage
-#FROM python:3.10-slim
-#
-## Set working directory
-#WORKDIR /app
-#
-## Set environment variables using ENV (using the ARG values defined globally)
-#ENV DB_COLLECTION_NAME=$DB_COLLECTION_NAME
-#ENV DB_NAME=$DB_NAME
-#ENV DB_PASSWORD=$DB_PASSWORD
-#ENV DB_USERNAME=$DB_USERNAME
-#ENV MQTT_CLEAN_SESSION=$MQTT_CLEAN_SESSION
-#ENV MQTT_CLIENT_ID=$MQTT_CLIENT_ID
-#ENV MQTT_CLUSTER_URL=$MQTT_CLUSTER_URL
-#ENV MQTT_KEEPALIVE=$MQTT_KEEPALIVE
-#ENV MQTT_PASSWORD=$MQTT_PASSWORD
-#ENV MQTT_PORT=$MQTT_PORT
-#ENV MQTT_USERNAME=$MQTT_USERNAME
-#ENV PIP_REQUIRE_VIRTUALENV=True
-#ENV PYTHONUNBUFFERED=1
-#
-## Copy application files from the builder stage
-#COPY --from=builder /app .
-#
-## Expose the desired port
-#EXPOSE 8008
-#
-## Set the entrypoint command
-#ENTRYPOINT ["python3", "main/debug.py"]
+#    --junitxml=../test-results/results-cpu.xml'
+
+# File structur çıkart
+#Testleri çalıştır
