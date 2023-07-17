@@ -1,5 +1,10 @@
 # Builder stage
-FROM python:3.10-slim as builder
+FROM python:3.10-slim as compile-image
+
+## virtualenv
+ENV VIRTUAL_ENV=/opt/py310
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
@@ -11,23 +16,19 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application files
-COPY . .
+COPY . /app
 
 # Test stage
-FROM builder as tester
+FROM alpine:3.14.2 as runtime-image
 
-COPY --from=builder /app .
+## copy Python dependencies from build image
+COPY --from=compile-image /opt/py310 /opt/py310
+COPY --from=compile-image /app /app
 
 WORKDIR /app/main
+## set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PATH="/opt/py310/bin:$PATH"
 
-# Run tests
-#CMD ["pytest", "*"]
-
-#RUN python3 -m pytest *
-#-v -o junit_family=xunit1 \
-#    --cov=../../main --cov-report xml:../test-results/coverage-cpu.xml \
-#    --cov-report html:../test-results/cov_html-cpu \
-#    --junitxml=../test-results/results-cpu.xml'
-
-# File structur çıkart
-#Testleri çalıştır
+CMD ["python", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../../main", "--cov-report", "xml:../test-results/coverage-cpu.xml", "--cov-report", "html:../test-results/cov_html-cpu", "--junitxml=../test-results/results-cpu.xml"]
