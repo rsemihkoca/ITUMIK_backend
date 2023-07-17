@@ -31,5 +31,5 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/py310/bin:$PATH"
 
-CMD ["python3", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../../main", "--cov-report", "xml:../test-results/coverage-cpu.xml", "--cov-report", "html:../test-results/cov_html-cpu", "--junitxml=../test-results/results-cpu.xml"]
+CMD ["python3", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../main", "--cov-report", "xml:../tests/coverage-cpu.xml", "--cov-report", "html:../tests/cov_html-cpu", "--junitxml=../tests/results-cpu.xml"]
 CMD ["sleep", "infinity"]
