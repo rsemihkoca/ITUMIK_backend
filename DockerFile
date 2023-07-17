@@ -1,5 +1,5 @@
 # Builder stage
-FROM python:3.10-slim as compile-image
+FROM python:3.10-alpine as compile-image
 
 ## virtualenv
 ENV VIRTUAL_ENV=/opt/py310
@@ -13,13 +13,13 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && rm -rf /var/cache/apk/*
 
 # Copy the rest of the application files
 COPY . /app
 
 # Test stage
-FROM alpine:3.14.2 as runtime-image
+FROM python:3.10-alpine as runtime-image
 
 ## copy Python dependencies from build image
 COPY --from=compile-image /opt/py310 /opt/py310
@@ -31,4 +31,5 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/py310/bin:$PATH"
 
-CMD ["python", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../../main", "--cov-report", "xml:../test-results/coverage-cpu.xml", "--cov-report", "html:../test-results/cov_html-cpu", "--junitxml=../test-results/results-cpu.xml"]
+CMD ["python3", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../../main", "--cov-report", "xml:../test-results/coverage-cpu.xml", "--cov-report", "html:../test-results/cov_html-cpu", "--junitxml=../test-results/results-cpu.xml"]
+CMD ["sleep", "infinity"]
