@@ -1,18 +1,13 @@
 #!groovy
 pipeline {
-    environment {
-        PIP_REQUIRE_VIRTUALENV = '1'
-    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     agent {
         dockerfile {
-            // Use the specified Dockerfile for the agent
             filename 'Dockerfile'
-            // Mount the Python package dependencies directory as a Docker volume
-            args '-v $HOME/.cache/pip:/root/.cache/pip'
-        }
+            args '-u root:root'
     }
     triggers {
         GenericTrigger(
