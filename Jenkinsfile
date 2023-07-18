@@ -83,7 +83,6 @@ pipeline {
 
                     env.RELEASE_URL = json.release.url
                     env.CLONE_URL = json.repository.clone_url
-                    env.RELEASE_NAME = json.release.name
                     env.AUTHOR_LOGIN = json.release.author.login
                     env.REPO_FULL_NAME = json.repository.full_name
                     env.BRANCH_NAME = json.release.target_commitish
@@ -96,27 +95,20 @@ pipeline {
         stage('Checkout Repository') {
             steps {
                 script {
-                    def cloneUrl = env.CLONE_URL
-                    def targetBranch = env.BRANCH_NAME
-                    def releaseUrl = env.RELEASE_URL
-                    def repoFolderName = env.REPO_FOLDER_NAME
-                    echo 'Clone URL:'+ cloneUrl
-                    echo 'Release URL:'+ releaseUrl
-
-                    if (releaseUrl) {
-                        echo "Checking out repository from clone URL: $cloneUrl"
-                        sh "mkdir -p $repoFolderName"
+                    if (${env.RELEASE_URL}) {
+                        echo "Checking out repository from clone URL: ${env.CLONE_URL}"
+                        sh "mkdir -p ${env.REPO_FOLDER_NAME}"
 
                         // change the current directory to the new directory
-                        dir("$repoFolderName") {
+                        dir("${env.REPO_FOLDER_NAME}") {
                             withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
                                 checkout([
                                     $class: 'GitSCM',
-                                    branches: [[name: "*/$targetBranch"]],
+                                    branches: [[name: "*/${env.BRANCH_NAME}"]],
                                     doGenerateSubmoduleConfigurations: false,
                                     extensions: [],
                                     submoduleCfg: [],
-                                    userRemoteConfigs: [[url: cloneUrl]]
+                                    userRemoteConfigs: [[url: "${env.CLONE_URL}"]]
                                 ])
                             }
                         }
@@ -137,8 +129,9 @@ pipeline {
                 echo 'Building Docker Image...'
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
-                    dir
-                    def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
+                    dir("${env.REPO_FOLDER_NAME}") {
+                        def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
+                    }
                 }
             }
         }
