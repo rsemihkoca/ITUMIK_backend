@@ -5,12 +5,7 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '3'))
   }
-  agent {
-    dockerfile {
-      filename './Dockerfile'
-      args '-u root:root'
-      }
-  }
+  agent any
     triggers {
       GenericTrigger(
         genericVariables: [
