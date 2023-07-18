@@ -33,6 +33,6 @@ ENV PATH="/opt/py310/bin:$PATH"
 
 EXPOSE 8008
 
-ENTRYPOINT ["python3", "debug.py"]
+CMD ["/bin/sh"]
 #CMD ["python3", "-m", "pytest", "*", "-v", "-o", "junit_family=xunit1", "--cov=../main", "--cov-report", "xml:../reports/coverage-cpu.xml", "--cov-report", "html:../reports/cov_html-cpu", "--junitxml=../reports/results-cpu.xml"]
 # en son cmd çalışıyor
