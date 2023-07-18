@@ -24,7 +24,14 @@ pipeline {
                 echo 'Current working directory: ' + pwd()
             }
         }
-
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    // Delete the workspace directory
+                    deleteDir()
+                }
+            }
+        }
         stage('Check Docker Installation') {
             steps {
                 script {
@@ -86,12 +93,51 @@ pipeline {
             }
         }
 
+        stage('Checkout Repository') {
+            steps {
+                script {
+                    def cloneUrl = env.CLONE_URL
+                    def targetBranch = env.BRANCH_NAME
+                    def releaseUrl = env.RELEASE_URL
+                    def repoFolderName = env.REPO_FOLDER_NAME
+                    echo 'Clone URL:'+ cloneUrl
+                    echo 'Release URL:'+ releaseUrl
+
+                    if (releaseUrl) {
+                        echo "Checking out repository from clone URL: $cloneUrl"
+                        sh "mkdir -p $repoFolderName"
+
+                        // change the current directory to the new directory
+                        dir("$repoFolderName") {
+                            withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
+                                checkout([
+                                    $class: 'GitSCM',
+                                    branches: [[name: "*/$targetBranch"]],
+                                    doGenerateSubmoduleConfigurations: false,
+                                    extensions: [],
+                                    submoduleCfg: [],
+                                    userRemoteConfigs: [[url: cloneUrl]]
+                                ])
+                            }
+                        }
+
+                        echo 'Repository checked out successfully.'
+                    } else {
+                        echo "Release URL is missing. Skipping repository checkout."
+                    }
+                }
+            }
+        }
+
+
         stage('Build Docker Image') {
             steps {
                 sh 'ls -a'
+                sh 'pwd'
                 echo 'Building Docker Image...'
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
+                    dir
                     def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
                 }
             }
