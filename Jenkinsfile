@@ -141,7 +141,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Docker Container and Tests...'
-                    def app = docker.image('mik_backend:v0.1.0-beta')
+                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
                     def customEnv = [
                         "DB_COLLECTION_NAME=MIK_Collection",
                         "DB_NAME=MIK_Database",
