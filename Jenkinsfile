@@ -24,6 +24,12 @@ pipeline {
       )
     }
     stages {
+      stage('Print PWD') {
+        steps {
+          echo 'Current working directory: ' + pwd()
+        }
+
+      }
       stage('Parse Payload') {
         steps {
           script {
