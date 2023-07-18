@@ -124,12 +124,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'ls -a'
-                sh 'pwd'
+
                 echo 'Building Docker Image...'
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
                     dir(env.REPO_FOLDER_NAME) {
+                        sh 'ls -a'
+                        sh 'pwd'
                         def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
                     }
                 }
