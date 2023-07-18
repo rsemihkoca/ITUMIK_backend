@@ -91,7 +91,7 @@ pipeline {
                 sh 'ls -a'
                 echo 'Building Docker Image...'
                 script {
-                    def dockerImage = docker.build("${env.REPO_FOLDER_NAME}:${env.DOCKER_TAG_NAME}", "-f Dockerfile")
+                    def dockerImage = docker.build("${env.REPO_FOLDER_NAME}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
                 }
             }
         }
