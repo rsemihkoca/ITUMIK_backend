@@ -1,7 +1,9 @@
 #!groovy
 
 pipeline {
-
+    tools {
+      'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker'
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
