@@ -28,19 +28,26 @@ pipeline {
         stage('Check Docker Installation') {
             steps {
                 script {
-                    def dockerInstallation = tool name: 'Docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+                    try {
+                        // Check Docker version
+                        sh 'docker --version'
 
-                    if (dockerInstallation != null) {
-                        echo "Docker is installed:"
-                        echo "  - Name: ${dockerInstallation.getName()}"
-                        echo "  - Home: ${dockerInstallation.getHome()}"
-                        echo "  - Version: ${dockerInstallation.getVersion()}"
-                    } else {
-                        error("Docker is not installed. Please configure Docker in Jenkins.")
+                        // Check Docker info
+                        sh 'docker info'
+
+                        // List Docker images
+                        sh 'docker images'
+
+                        // List Docker containers
+                        sh 'docker ps -a'
+                    } catch (Exception e) {
+                        // Handle any errors or failures
+                        error("Failed to check Docker installation: ${e.getMessage()}")
                     }
                 }
             }
         }
+
 
         stage('Parse Payload') {
             steps {
