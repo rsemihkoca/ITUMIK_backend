@@ -81,7 +81,7 @@ pipeline {
                     env.REPO_FULL_NAME = json.repository.full_name
                     env.BRANCH_NAME = json.release.target_commitish
                     env.REPO_FOLDER_NAME = json.repository.name
-                    env.DOCKER_REPO_NAME = json.release.tag_name
+                    env.DOCKER_TAG_NAME = json.release.tag_name
                 }
             }
         }
