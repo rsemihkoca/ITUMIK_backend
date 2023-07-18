@@ -95,12 +95,12 @@ pipeline {
         stage('Checkout Repository') {
             steps {
                 script {
-                    if (${env.RELEASE_URL}) {
+                    if (env.RELEASE_URL) {
                         echo "Checking out repository from clone URL: ${env.CLONE_URL}"
                         sh "mkdir -p ${env.REPO_FOLDER_NAME}"
 
                         // change the current directory to the new directory
-                        dir("${env.REPO_FOLDER_NAME}") {
+                        dir(env.REPO_FOLDER_NAME) {
                             withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
                                 checkout([
                                     $class: 'GitSCM',
