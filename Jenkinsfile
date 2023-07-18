@@ -129,7 +129,7 @@ pipeline {
                 echo 'Building Docker Image...'
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
-                    dir("${env.REPO_FOLDER_NAME}") {
+                    dir({env.REPO_FOLDER_NAME) {
                         def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
                     }
                 }
