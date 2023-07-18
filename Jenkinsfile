@@ -67,7 +67,7 @@ pipeline {
           sh 'ls -a'
           echo 'Building Docker Image...'
           script {
-          def dockerImage = docker.build("mik_backend:v0.1.0-beta", "-f ${env.WORKSPACE}/Dockerfile ${env.WORKSPACE}")          }
+          def dockerImage = docker.build("mik_backend:v0.1.0-beta", "-f .")          }
         }
       }
 
