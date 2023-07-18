@@ -1,0 +1,7 @@
+Install Recommended Plugins and
+pipeline-utility-steps
+Blue Ocean
+Cobertura
+Docker
+Generic Webhook Trigger Plugin
+Kubernetes
