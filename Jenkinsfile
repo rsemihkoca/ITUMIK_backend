@@ -23,8 +23,26 @@ pipeline {
         steps {
           echo 'Current working directory: ' + pwd()
         }
-
       }
+
+
+    stage('Check Docker Installation') {
+      steps {
+        script {
+          def dockerInstallation = tool name: 'Docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+
+          if (dockerInstallation != null) {
+            echo "Docker is installed:"
+            echo "  - Name: ${dockerInstallation.getName()}"
+            echo "  - Home: ${dockerInstallation.getHome()}"
+            echo "  - Version: ${dockerInstallation.getVersion()}"
+          } else {
+            error("Docker is not installed. Please configure Docker in Jenkins.")
+          }
+        }
+      }
+
+
       stage('Parse Payload') {
         steps {
           script {
