@@ -64,10 +64,10 @@ pipeline {
 
       stage('Build Docker Image') {
         steps {
+          sh 'ls -a'
           echo 'Building Docker Image...'
           script {
-            def dockerImage = docker.build("mik_backend:v0.1.0-beta", "-f Dockerfile .")
-          }
+          def dockerImage = docker.build("mik_backend:v0.1.0-beta", "-f ${env.WORKSPACE}/Dockerfile ${env.WORKSPACE}")          }
         }
       }
 
