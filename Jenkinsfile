@@ -81,6 +81,7 @@ pipeline {
                     env.REPO_FULL_NAME = json.repository.full_name
                     env.BRANCH_NAME = json.release.target_commitish
                     env.REPO_FOLDER_NAME = json.repository.name
+                    env.DOCKER_REPO_NAME = json.release.tag_name
                 }
             }
         }
@@ -90,7 +91,7 @@ pipeline {
                 sh 'ls -a'
                 echo 'Building Docker Image...'
                 script {
-                    def dockerImage = docker.build("mik_backend:v0.1.0-beta", "-f Dockerfile")
+                    def dockerImage = docker.build("${env.REPO_FOLDER_NAME}:${env.DOCKER_TAG_NAME}", "-f Dockerfile")
                 }
             }
         }
