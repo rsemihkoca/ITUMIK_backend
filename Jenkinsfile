@@ -9,7 +9,8 @@ pipeline {
     dockerfile {
       filename 'Dockerfile'
       args '-u root:root'
-    }
+      }
+  }
     triggers {
       GenericTrigger(
         genericVariables: [
@@ -93,7 +94,7 @@ pipeline {
             }
           }
         }
-
+        }
         stage('Push Docker Image') {
           steps {
             echo 'Pushing Docker Image...'
@@ -111,6 +112,5 @@ pipeline {
             // Additional steps after building the final image if needed
           }
         }
-      }
-    }
   }
+
