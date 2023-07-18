@@ -131,6 +131,5 @@ pipeline {
             // Additional steps after building the final image if needed
           }
         }
-  }
-
+    }
 }
