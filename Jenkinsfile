@@ -130,6 +130,7 @@ pipeline {
             sh 'docker build -t myimage:final .'
             // Additional steps after building the final image if needed
           }
+            }
         }
     }
 }
