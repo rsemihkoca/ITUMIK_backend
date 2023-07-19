@@ -185,7 +185,7 @@ pipeline {
                 echo 'Pushing Docker Image...'
                 script {
                     withCredentials([usernamePassword( credentialsId: 'DOCKERHUB_CREDENTIALS_ID', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                        def registry_url = "${env.Author_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
+                        def registry_url = "docker.io/library/${env.Author_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}"
 //                         //"registry.hub.docker.com/"
 //                         sh "docker login -u $USER -p $PASSWORD ${registry_url}"
                         def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
