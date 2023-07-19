@@ -149,19 +149,32 @@ pipeline {
                 script {
                     echo 'Running Docker Container and Tests...'
                     def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
-                    // Use single quotes for secrets to avoid any escaping issues
+
+                    // Jenkins Secrets from .env file
+                    def db_collection_name = sh(script: 'cat ${SECRET_FILE} | grep DB_COLLECTION_NAME | cut -d "=" -f 2', returnStdout: true).trim()
+                    def db_name = sh(script: 'cat ${SECRET_FILE} | grep DB_NAME | cut -d "=" -f 2', returnStdout: true).trim()
+                    def db_password = sh(script: 'cat ${SECRET_FILE} | grep DB_PASSWORD | cut -d "=" -f 2', returnStdout: true).trim()
+                    def db_username = sh(script: 'cat ${SECRET_FILE} | grep DB_USERNAME | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_clean_session = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLEAN_SESSION | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_client_id = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLIENT_ID | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_cluster_url = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLUSTER_URL | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_keepalive = sh(script: 'cat ${SECRET_FILE} | grep MQTT_KEEPALIVE | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_password = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PASSWORD | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_port = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PORT | cut -d "=" -f 2', returnStdout: true).trim()
+                    def mqtt_username = sh(script: 'cat ${SECRET_FILE} | grep MQTT_USERNAME | cut -d "=" -f 2', returnStdout: true).trim()
+
                     def customEnv = [
-                        "DB_COLLECTION_NAME=MIK_Collection",
-                        "DB_NAME=MIK_Database",
-                        "DB_PASSWORD=iBmz2iInhubGNl8N",
-                        "DB_USERNAME=python_client",
-                        "MQTT_CLEAN_SESSION=False",
-                        "MQTT_CLIENT_ID=999",
-                        "MQTT_CLUSTER_URL=77de85f1ab254b9a81b50e2967d53988.s2.eu.hivemq.cloud",
-                        "MQTT_KEEPALIVE=10",
-                        "MQTT_PASSWORD=Z>!=z\"6kC;_MYzx",
-                        "MQTT_PORT=8883",
-                        "MQTT_USERNAME=python_client"
+                        "DB_COLLECTION_NAME=${db_collection_name}",
+                        "DB_NAME=${db_name}",
+                        "DB_PASSWORD=${db_password}",
+                        "DB_USERNAME=${db_username}",
+                        "MQTT_CLEAN_SESSION=${mqtt_clean_session}",
+                        "MQTT_CLIENT_ID=${mqtt_client_id}",
+                        "MQTT_CLUSTER_URL=${mqtt_cluster_url}",
+                        "MQTT_KEEPALIVE=${mqtt_keepalive}",
+                        "MQTT_PASSWORD=${mqtt_password}",
+                        "MQTT_PORT=${mqtt_port}",
+                        "MQTT_USERNAME=${mqtt_username}"
                     ]
 
                     app.inside("-e ${customEnv.join(' -e ')} -p 8008:8008") {
@@ -170,6 +183,7 @@ pipeline {
                 }
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing Docker Image...'
