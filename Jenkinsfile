@@ -153,20 +153,31 @@ pipeline {
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
                             def envValues = readFile(ENV_VALUES_FILE)
-                            sh 'echo ${ENV_VALUES_FILE}'
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
-                                app.inside(" --env-file ${ENV_VALUES_FILE} -p 8008:8008") {
-                                        dir('main') {
-                                            sh 'ls -a'
-                                            sh 'pwd'
-                                            sh """
-                                                python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml ${JOIN_STRING}
-                                            """
 
+                                app.withRun('${valuesArray} -p --rm -itp 8008:8008 -d') {
+                                    c ->
+                                    dir('main') {
+                                        sh 'ls -a'
+                                        sh 'pwd'
+                                        sh """
+                                        python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
+                                        """
                                     }
                                 }
+                                //sh 'docker run ${valuesArray} -p --rm -itp 8008:8008 -d mik_backend:v0.1.0-beta'
+//                                 app.inside(" --env-file ${ENV_VALUES_FILE} -p 8008:8008") {
+//                                         dir('main') {
+//                                             sh 'ls -a'
+//                                             sh 'pwd'
+//                                             sh """
+//                                                 python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
+//                                             """
+//
+//                                     }
+//                                 }
                             }
                         }
                     }
