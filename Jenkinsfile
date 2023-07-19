@@ -163,6 +163,7 @@ pipeline {
                                     dir('main') {
                                         sh 'ls -a'
                                         sh 'pwd'
+                                        sh "import os ; print(os.getenv('DB_PASSWORD'))"
                                         sh """
                                         python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
                                         """
