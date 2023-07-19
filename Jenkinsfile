@@ -120,7 +120,14 @@ pipeline {
                 }
             }
         }
-
+        stage('Prune Docker Images') {
+            steps {
+                script {
+                        sh "docker image prune -f"
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -171,10 +178,11 @@ pipeline {
                     ]
 
                     dir(env.REPO_FOLDER_NAME) {
-                        sh 'ls -a'
-                        sh 'pwd'
+
                         app.inside("-e ${customEnv.join(' -e ')} -p 8008:8008") {
                             dir('main') {
+                                sh 'ls -a'
+                                sh 'pwd'
                                 sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
                             }
                         }
