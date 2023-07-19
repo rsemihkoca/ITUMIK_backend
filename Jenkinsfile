@@ -147,7 +147,8 @@ pipeline {
 
         stage('Parse Secret File and Set Environment Variables') {
             steps {
-                // Jenkins credentials binding
+                script {
+                                // Jenkins credentials binding
                 withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
                     script {
                         env.PARSED_VARS = sh(script: '''
@@ -185,6 +186,7 @@ pipeline {
                 }
             }
         }
+    }
 
 
         stage('Push Docker Image') {
