@@ -154,7 +154,7 @@ pipeline {
                         script {
                             sh "cat \"\$ENV_VALUES_FILE\""
                             def envValues = readFile("${ENV_VALUES_FILE}")
-                            def valuesArray = envValues.split('\n').collect { "-e ${it}" }
+                            def valuesArray = envValues.split('\n').collect { "-e ${it}" }.join(" ")
                             println valuesArray
                             dir(env.REPO_FOLDER_NAME) {
 
