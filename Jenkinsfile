@@ -158,7 +158,7 @@ pipeline {
                             println valuesArray
                             dir(env.REPO_FOLDER_NAME) {
 
-                                app.inside('${valuesArray} -d --rm -itp 8008:8008') {
+                                app.inside("${valuesArray} -d --rm -p 8008:8008") {
                                     c ->
                                     dir('main') {
                                         sh 'ls -a'
