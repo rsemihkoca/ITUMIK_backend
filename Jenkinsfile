@@ -139,9 +139,8 @@ pipeline {
 
         stage('Setup') {
             steps {
-                // .env dosyasını Jenkins Global Credential Manager'dan al
                 withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'envFile')]) {
-                    sh 'source ${envFile}'
+                    sh 'echo ${envFile}'
                 }
             }
         }
