@@ -137,11 +137,20 @@ pipeline {
             }
         }
 
+        stage('Setup') {
+            steps {
+                // .env dosyasını Jenkins Global Credential Manager'dan al
+                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'envFile')]) {
+                    sh 'source ${envFile}'
+                }
+            }
+        }
         stage('Run Container and Test') {
             steps {
                 script {
                     echo 'Running Docker Container and Tests...'
                     def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+                    // Use single quotes for secrets to avoid any escaping issues
                     def customEnv = [
                         "DB_COLLECTION_NAME=MIK_Collection",
                         "DB_NAME=MIK_Database",
