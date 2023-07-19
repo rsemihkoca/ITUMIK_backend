@@ -152,8 +152,8 @@ pipeline {
                     // Jenkins credentials binding
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
-                            sh "cat \$ENV_VALUES_FILE"
-                            def envValues = readFile(ENV_VALUES_FILE)
+                            sh "cat \"\$ENV_VALUES_FILE\""
+                            def envValues = readFile("\"${ENV_VALUES_FILE}\"")
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
