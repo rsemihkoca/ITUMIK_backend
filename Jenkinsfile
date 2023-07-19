@@ -185,12 +185,8 @@ pipeline {
                 echo 'Pushing Docker Image...'
                 script {
                     withCredentials([usernamePassword( credentialsId: 'DOCKERHUB_CREDENTIALS_ID', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                        def registry_url = "https://hub.docker.com/"
-                        //"docker.io/library/${env.Author_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}"
-//                         //"registry.hub.docker.com/"
-//                         sh "docker login -u $USER -p $PASSWORD ${registry_url}"
-                        def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
-                        withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: registry_url]) {
+                        def app = docker.image("${env.Author_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+                        withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: ""]) {
                             app.push() // Docker imajını Docker Hub'a gönderin
                         }
                     }
