@@ -152,12 +152,8 @@ pipeline {
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
                             def envValues = readFile(ENV_VALUES_FILE)
-                            sh 'echo ${envValues}' // Just to display the joined string
-
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
                             def joinedString = valuesArray.join(' ')
-                            sh 'echo ${joinedString}' // Just to display the joined string
-
 
 
                         dir(env.REPO_FOLDER_NAME) {
