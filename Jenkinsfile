@@ -147,33 +147,34 @@ pipeline {
 
         stage('Parse Secret File and Set Environment Variables') {
             steps {
-                script {
-                    // Jenkins credentials binding
-                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
-                        sh '''
-                        declare -A myarray
-                        while IFS='=' read -r key value
-                        do
-                        key=$(echo $key | tr '.' '_')
-                        myarray[$key]="$value"
-                        done < "$SECRET_FILE"
+                // Jenkins credentials binding
+                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
+                    script {
+                        env.PARSED_VARS = sh(script: '''
+                            #!/bin/bash
+                            declare -A myarray
+                            while IFS='=' read -r key value
+                            do
+                                key=$(echo $key | tr '.' '_')
+                                myarray[$key]="$value"
+                            done < "$SECRET_FILE"
 
-                        export DB_COLLECTION_NAME="${myarray[DB_COLLECTION_NAME]}"
-                        export DB_NAME="${myarray[DB_NAME]}"
-                        export DB_PASSWORD="${myarray[DB_PASSWORD]}"
-                        export DB_USERNAME="${myarray[DB_USERNAME]}"
-                        export MQTT_CLEAN_SESSION="${myarray[MQTT_CLEAN_SESSION]}"
-                        export MQTT_CLIENT_ID="${myarray[MQTT_CLIENT_ID]}"
-                        export MQTT_CLUSTER_URL="${myarray[MQTT_CLUSTER_URL]}"
-                        export MQTT_KEEPALIVE="${myarray[MQTT_KEEPALIVE]}"
-                        export MQTT_PASSWORD="${myarray[MQTT_PASSWORD]}"
-                        export MQTT_PORT="${myarray[MQTT_PORT]}"
-                        export MQTT_USERNAME="${myarray[MQTT_USERNAME]}"
-                        '''
+                            echo DB_COLLECTION_NAME=${myarray[DB_COLLECTION_NAME]}
+                            echo DB_NAME=${myarray[DB_NAME]}
+                            echo DB_PASSWORD=${myarray[DB_PASSWORD]}
+                            echo DB_USERNAME=${myarray[DB_USERNAME]}
+                            echo MQTT_CLEAN_SESSION=${myarray[MQTT_CLEAN_SESSION]}
+                            echo MQTT_CLIENT_ID=${myarray[MQTT_CLIENT_ID]}
+                            echo MQTT_CLUSTER_URL=${myarray[MQTT_CLUSTER_URL]}
+                            echo MQTT_KEEPALIVE=${myarray[MQTT_KEEPALIVE]}
+                            echo MQTT_PASSWORD=${myarray[MQTT_PASSWORD]}
+                            echo MQTT_PORT=${myarray[MQTT_PORT]}
+                            echo MQTT_USERNAME=${myarray[MQTT_USERNAME]}
+                        ''', returnStdout: true).trim()
                     }
 
                     dir(env.REPO_FOLDER_NAME) {
-                        app.inside("-p 8008:8008") {
+                        app.inside("-e ${env.PARSED_VARS} -p 8008:8008") {
                             dir('main') {
                                 sh 'ls -a'
                                 sh 'pwd'
@@ -184,7 +185,6 @@ pipeline {
                 }
             }
         }
-
 
 
         stage('Push Docker Image') {
