@@ -160,7 +160,7 @@ pipeline {
                                 app.withRun('${valuesArray} -d --rm -itp 8008:8008 ') {
                                     c ->
                                     dir('main') {
-                                        sh 'echo ${valuesArray}'
+                                        sh 'valuesArray ${valuesArray}'
                                         sh 'ls -a'
                                         sh 'pwd'
                                         sh """
