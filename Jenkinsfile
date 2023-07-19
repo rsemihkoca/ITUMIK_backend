@@ -164,7 +164,7 @@ pipeline {
                                         sh 'ls -a'
                                         sh 'pwd'
                                         sh 'python -c "import os; print(os.environ[\'DB_PASSWORD\'])"'
-                                        sh 'python -c "import os; [print(key, \'=\', value) for key, value in os.environ.items() if key != \'PATH\']"'
+                                        //sh 'python -c "import os; [print(key, \'=\', value) for key, value in os.environ.items() if key != \'PATH\']"'
 
                                         sh """
                                             if grep -q docker /proc/1/cgroup; then
