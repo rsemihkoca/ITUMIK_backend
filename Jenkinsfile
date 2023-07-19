@@ -156,7 +156,7 @@ pipeline {
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
-                                app.inside(" --env-file ${envValues} -p 8008:8008") {
+                                app.inside(" --env-file ${ENV_VALUES_FILE} -p 8008:8008") {
                                         dir('main') {
                                             sh 'ls -a'
                                             sh 'pwd'
