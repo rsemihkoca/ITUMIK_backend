@@ -147,14 +147,15 @@ pipeline {
 
         stage('Parse Secret File and Set Environment Variables') {
             steps {
-                // Jenkins credentials binding
-                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
-                    sh '''
+                script {
+                    // Jenkins credentials binding
+                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
+                        sh '''
                         declare -A myarray
                         while IFS='=' read -r key value
                         do
-                            key=$(echo $key | tr '.' '_')
-                            myarray[$key]="$value"
+                        key=$(echo $key | tr '.' '_')
+                        myarray[$key]="$value"
                         done < "$SECRET_FILE"
 
                         export DB_COLLECTION_NAME="${myarray[DB_COLLECTION_NAME]}"
@@ -168,15 +169,16 @@ pipeline {
                         export MQTT_PASSWORD="${myarray[MQTT_PASSWORD]}"
                         export MQTT_PORT="${myarray[MQTT_PORT]}"
                         export MQTT_USERNAME="${myarray[MQTT_USERNAME]}"
-                    '''
-                }
+                        '''
+                    }
 
-                dir(env.REPO_FOLDER_NAME) {
-                    app.inside("-p 8008:8008") {
-                        dir('main') {
-                            sh 'ls -a'
-                            sh 'pwd'
-                            sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                    dir(env.REPO_FOLDER_NAME) {
+                        app.inside("-p 8008:8008") {
+                            dir('main') {
+                                sh 'ls -a'
+                                sh 'pwd'
+                                sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                            }
                         }
                     }
                 }
