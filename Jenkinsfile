@@ -157,7 +157,7 @@ pipeline {
 
 
                         dir(env.REPO_FOLDER_NAME) {
-                            app.inside("${joinedString} -p 8008:8008") {
+                            app.inside('${joinedString} -p 8008:8008') {
                                 dir('main') {
                                     sh 'ls -a'
                                     sh 'pwd'
