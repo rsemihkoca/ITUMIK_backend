@@ -149,9 +149,9 @@ pipeline {
                 script {
                     def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
                     // Jenkins credentials binding
-                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
+                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
                         script {
-                            def envValues = sh(script: "cat \${ENV_VALUES_FILE}", returnStdout: true).trim()
+                            def envValues = sh(script: "cat \${SECRET_FILE}", returnStdout: true).trim()
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
                             def joinedString = valuesArray.join(' ')
                             sh "echo ${joinedString}" // Just to display the joined string
