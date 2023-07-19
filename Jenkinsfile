@@ -123,11 +123,11 @@ pipeline {
         stage('Prune Docker Images') {
             steps {
                 script {
-                        sh "docker image prune -f"
-                    }
+                    sh "docker image prune -f"
                 }
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
