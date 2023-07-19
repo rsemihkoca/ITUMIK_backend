@@ -1,7 +1,4 @@
-#!groovy
-
 pipeline {
-
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
@@ -55,7 +52,6 @@ pipeline {
             }
         }
 
-
         stage('Parse Payload') {
             steps {
                 script {
@@ -99,7 +95,7 @@ pipeline {
                         echo "Checking out repository from clone URL: ${env.CLONE_URL}"
                         sh "mkdir -p ${env.REPO_FOLDER_NAME}"
 
-                        // change the current directory to the new directory
+                        // Change the current directory to the new directory
                         dir(env.REPO_FOLDER_NAME) {
                             withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
                                 checkout([
@@ -120,6 +116,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Prune Docker Images') {
             steps {
                 script {
@@ -128,10 +125,8 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
-
                 echo 'Building Docker Image...'
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
@@ -157,9 +152,7 @@ pipeline {
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }.join(" ")
                             println valuesArray
                             dir(env.REPO_FOLDER_NAME) {
-
-                                app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") {
-                                    c ->
+                                app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") { c ->
                                     dir('main') {
                                         sh 'ls -a'
                                         sh 'pwd'
@@ -191,17 +184,41 @@ pipeline {
                 echo 'Pushing Docker Image...'
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        dockerImage.push("mik_backend:v0.1.0-beta")
+                        dockerImage.push("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
                     }
                 }
             }
         }
 
-//                 stage('Finalize') {
-//                     steps {
-//                         sh 'docker build -t myimage:final .'
-//                         // Additional steps after building the final image if needed
-//                     }
-//                 }
+        stage('Generate Cobertura Report') {
+            steps {
+                echo 'Generating Cobertura Report...'
+                dir(env.REPO_FOLDER_NAME) {
+                    sh 'cobertura-report.sh'
+                }
+            }
+        }
+
+        stage('Generate JUnit Report') {
+            steps {
+                echo 'Generating JUnit Report...'
+                dir(env.REPO_FOLDER_NAME) {
+                    sh 'junit-report.sh'
+                }
+            }
+        }
+
+        stage('Send Email Notification') {
+            steps {
+                echo 'Sending email notification...'
+                emailext(
+                    subject: "Pipeline Name: ${env.JOB_NAME} (Duration: ${currentBuild.durationString})",
+                    body: "Build completed successfully! Here are the build details:",
+                    to: 'rsemihkoca@outlook.com',
+                    attachLog: true,
+                    attachmentsPattern: 'reports/**/*'
+                )
+            }
+        }
     }
 }
