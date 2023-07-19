@@ -131,19 +131,16 @@ pipeline {
                     dir(env.REPO_FOLDER_NAME) {
                         sh 'ls -a'
                         sh 'pwd'
-                        def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
+                        app.inside("-e ${customEnv.join(' -e ')} -p 8008:8008") {
+                            dir('main') {
+                                sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                            }
+                        }
                     }
                 }
             }
         }
 
-        stage('Setup') {
-            steps {
-                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'envFile')]) {
-                    sh 'echo ${envFile}'
-                }
-            }
-        }
         stage('Run Container and Test') {
             steps {
                 script {
