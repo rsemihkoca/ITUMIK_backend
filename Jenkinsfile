@@ -116,7 +116,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Prune Docker Images') {
             steps {
                 script {
@@ -149,10 +149,11 @@ pipeline {
                         script {
                             sh "cat \"\$ENV_VALUES_FILE\""
                             def envValues = readFile("${ENV_VALUES_FILE}")
-                            def valuesArray = envValues.split('\n').collect { "-e ${it}" }.join(" ")
+                            def valuesArray = envValues.split('\n').collect { "-e ${it}" } .join(" ")
                             println valuesArray
                             dir(env.REPO_FOLDER_NAME) {
-                                app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") { c ->
+                                app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") {
+                                    c ->
                                     dir('main') {
                                         sh 'ls -a'
                                         sh 'pwd'
@@ -160,15 +161,15 @@ pipeline {
                                         //sh 'python -c "import os; [print(key, \'=\', value) for key, value in os.environ.items() if key != \'PATH\']"'
 
                                         sh """
-                                            if grep -q docker /proc/1/cgroup; then
-                                               echo inside docker
-                                            else
-                                               echo on host
-                                               exit
-                                            fi
+                                        if grep -q docker /proc/1/cgroup; then
+                                            echo inside docker
+                                        else
+                                            echo on host
+                                            exit
+                                        fi
                                         """
                                         sh """
-                                            python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
+                                        python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
                                         """
                                     }
                                 }
@@ -194,6 +195,7 @@ pipeline {
                     }
                 }
             }
+        }
 
         stage('Generate Cobertura Report') {
             steps {
