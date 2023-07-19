@@ -152,19 +152,19 @@ pipeline {
                     // Jenkins credentials binding
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
-                            sh "cat \$SECRET_FILE"
+                            sh "cat \$ENV_VALUES_FILE"
                             def envValues = readFile(ENV_VALUES_FILE)
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
 
-                                app.withRun('${valuesArray} -d --rm -itp 8008:8008 ') {
+                                app.inside('${valuesArray} -d --rm -itp 8008:8008 ') {
                                     c ->
                                     dir('main') {
                                         sh 'ls -a'
                                         sh 'pwd'
                                         sh """
-                                        pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
+                                        python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
                                         """
                                     }
                                 }
