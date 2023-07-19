@@ -157,7 +157,7 @@ pipeline {
 
                             dir(env.REPO_FOLDER_NAME) {
 
-                                app.withRun('${valuesArray} -p --rm -itp 8008:8008 -d') {
+                                app.withRun('${valuesArray} -d --rm -itp 8008:8008 ') {
                                     c ->
                                     dir('main') {
                                         sh 'ls -a'
