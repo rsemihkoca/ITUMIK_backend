@@ -144,23 +144,22 @@ pipeline {
             }
         }
 
-        stage('Parse Secret File and Set Environment Variables') {
+        stage('Run Docker Image with Tests') {
             steps {
                 script {
+                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
                     // Jenkins credentials binding
-                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
-                        sh '''
-                            while IFS='=' read -r key value
-                            do
-                                key=$(echo $key | tr '.' '_')
-                                echo "export $key='$value'" >> vars.sh
-                            done < "$SECRET_FILE"
-                        '''
+                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
+                        script {
+                            def envValues = sh(script: "cat \${ENV_VALUES_FILE}", returnStdout: true).trim()
+                            def valuesArray = envValues.split('\n').collect { "-e ${it}" }
+                            def joinedString = valuesArray.join(' ')
+                            sh "echo ${joinedString}" // Just to display the joined string
 
-                        sh '. ./vars.sh'
+
 
                         dir(env.REPO_FOLDER_NAME) {
-                            app.inside("-p 8008:8008") {
+                            app.inside("${joinedString} -p 8008:8008") {
                                 dir('main') {
                                     sh 'ls -a'
                                     sh 'pwd'
@@ -168,7 +167,6 @@ pipeline {
                                 }
                             }
                         }
-                        sh 'rm vars.sh'
                     }
                 }
             }
