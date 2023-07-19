@@ -187,7 +187,7 @@ pipeline {
                     withCredentials([usernamePassword( credentialsId: 'DOCKERHUB_CREDENTIALS_ID', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
                         def registry_url = "docker.io"
                         //"registry.hub.docker.com/"
-                        bat "docker login -u $USER -p $PASSWORD ${registry_url}"
+                        sh "docker login -u $USER -p $PASSWORD ${registry_url}"
                         def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
                         withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: registry_url]) {
                             app.push() // Docker imajını Docker Hub'a gönderin
