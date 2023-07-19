@@ -156,15 +156,14 @@ pipeline {
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
-                                app.inside("-p 8008:8008") {
-                                    withEnv(["JOIN_STRING=${valuesArray.join(' ')}"]) {
+                                app.inside(" --env-file ${envValues} -p 8008:8008") {
                                         dir('main') {
                                             sh 'ls -a'
                                             sh 'pwd'
                                             sh """
                                                 python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml ${JOIN_STRING}
                                             """
-                                        }
+
                                     }
                                 }
                             }
