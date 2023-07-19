@@ -10,8 +10,8 @@ pipeline {
             ],
             causeString: 'GitHub event',
             token: 'TOKEN',
-            printContributedVariables: true,
-            printPostContent: true,
+            printContributedVariables: false,
+            printPostContent: false,
             silentResponse: false
         )
     }
