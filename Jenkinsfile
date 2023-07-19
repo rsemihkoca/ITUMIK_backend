@@ -148,20 +148,23 @@ pipeline {
             steps {
                 script {
                     def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+
                     // Jenkins credentials binding
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
                             def envValues = readFile(ENV_VALUES_FILE)
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
-                            def joinedString = valuesArray.join(' ')
 
-
-                        dir(env.REPO_FOLDER_NAME) {
-                            app.inside('${joinedString} -p 8008:8008') {
-                                dir('main') {
-                                    sh 'ls -a'
-                                    sh 'pwd'
-                                    sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                            dir(env.REPO_FOLDER_NAME) {
+                                app.inside("-p 8008:8008") {
+                                    withEnv(["JOIN_STRING=${valuesArray.join(' ')}"]) {
+                                        dir('main') {
+                                            sh 'ls -a'
+                                            sh 'pwd'
+                                            sh """
+                                                python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml ${JOIN_STRING}
+                                            """
+                                        }
                                     }
                                 }
                             }
