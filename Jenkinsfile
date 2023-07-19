@@ -153,6 +153,7 @@ pipeline {
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
                             def envValues = readFile(ENV_VALUES_FILE)
+                            sh "echo ${ENV_VALUES_FILE}"
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" }
 
                             dir(env.REPO_FOLDER_NAME) {
