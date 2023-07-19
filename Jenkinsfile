@@ -174,6 +174,7 @@ pipeline {
                     def mqtt_port = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PORT | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
                     def mqtt_username = sh(script: 'cat ${SECRET_FILE} | grep MQTT_USERNAME | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
 
+                    sh 'echo ${mqtt_port}'
                     def customEnv = [
                         "DB_COLLECTION_NAME=${db_collection_name}",
                         "DB_NAME=${db_name}",
