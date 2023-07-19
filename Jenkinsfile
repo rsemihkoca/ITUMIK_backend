@@ -183,8 +183,8 @@ pipeline {
             steps {
                 echo 'Pushing Docker Image...'
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        dockerImage.push("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+                      withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: 'https://index.docker.io/v1/']) {
+                        app.push() // Docker imajını Docker Hub'a gönderin
                     }
                 }
             }
