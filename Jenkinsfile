@@ -144,50 +144,35 @@ pipeline {
             }
         }
 
-
         stage('Parse Secret File and Set Environment Variables') {
             steps {
                 script {
-                                // Jenkins credentials binding
-                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
-                    script {
-                        env.PARSED_VARS = sh(script: '''
-                            #!/bin/bash
-                            declare -A myarray
+                    // Jenkins credentials binding
+                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
+                        sh '''
                             while IFS='=' read -r key value
                             do
                                 key=$(echo $key | tr '.' '_')
-                                myarray[$key]="$value"
+                                echo "export $key='$value'" >> vars.sh
                             done < "$SECRET_FILE"
+                        '''
 
-                            echo DB_COLLECTION_NAME=${myarray[DB_COLLECTION_NAME]}
-                            echo DB_NAME=${myarray[DB_NAME]}
-                            echo DB_PASSWORD=${myarray[DB_PASSWORD]}
-                            echo DB_USERNAME=${myarray[DB_USERNAME]}
-                            echo MQTT_CLEAN_SESSION=${myarray[MQTT_CLEAN_SESSION]}
-                            echo MQTT_CLIENT_ID=${myarray[MQTT_CLIENT_ID]}
-                            echo MQTT_CLUSTER_URL=${myarray[MQTT_CLUSTER_URL]}
-                            echo MQTT_KEEPALIVE=${myarray[MQTT_KEEPALIVE]}
-                            echo MQTT_PASSWORD=${myarray[MQTT_PASSWORD]}
-                            echo MQTT_PORT=${myarray[MQTT_PORT]}
-                            echo MQTT_USERNAME=${myarray[MQTT_USERNAME]}
-                        ''', returnStdout: true).trim()
-                    }
+                        sh '. ./vars.sh'
 
-                    dir(env.REPO_FOLDER_NAME) {
-                        app.inside("-e ${env.PARSED_VARS} -p 8008:8008") {
-                            dir('main') {
-                                sh 'ls -a'
-                                sh 'pwd'
-                                sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                        dir(env.REPO_FOLDER_NAME) {
+                            app.inside("-p 8008:8008") {
+                                dir('main') {
+                                    sh 'ls -a'
+                                    sh 'pwd'
+                                    sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
+                                }
                             }
                         }
+                        sh 'rm vars.sh'
                     }
                 }
             }
         }
-    }
-
 
         stage('Push Docker Image') {
             steps {
