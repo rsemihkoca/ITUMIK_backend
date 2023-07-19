@@ -144,64 +144,46 @@ pipeline {
             }
         }
 
-        stage('Run Container and Test') {
+
+        stage('Parse Secret File and Set Environment Variables') {
             steps {
-                script {
-                    echo 'Running Docker Container and Tests...'
-                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+                // Jenkins credentials binding
+                withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'SECRET_FILE')]) {
+                    sh '''
+                        declare -A myarray
+                        while IFS='=' read -r key value
+                        do
+                            key=$(echo $key | tr '.' '_')
+                            myarray[$key]="$value"
+                        done < "$SECRET_FILE"
 
-                    // Jenkins Secrets from .env file
-//                     def db_collection_name = sh(script: 'cat ${SECRET_FILE} | grep DB_COLLECTION_NAME | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def db_name = sh(script: 'cat ${SECRET_FILE} | grep DB_NAME | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def db_password = sh(script: 'cat ${SECRET_FILE} | grep DB_PASSWORD | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def db_username = sh(script: 'cat ${SECRET_FILE} | grep DB_USERNAME | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_clean_session = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLEAN_SESSION | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_client_id = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLIENT_ID | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_cluster_url = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLUSTER_URL | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_keepalive = sh(script: 'cat ${SECRET_FILE} | grep MQTT_KEEPALIVE | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_password = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PASSWORD | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_port = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PORT | cut -d "=" -f 2', returnStdout: true).trim()
-//                     def mqtt_username = sh(script: 'cat ${SECRET_FILE} | grep MQTT_USERNAME | cut -d "=" -f 2', returnStdout: true).trim()
-                    def db_collection_name = sh(script: 'cat ${SECRET_FILE} | grep DB_COLLECTION_NAME | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def db_name = sh(script: 'cat ${SECRET_FILE} | grep DB_NAME | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def db_password = sh(script: 'cat ${SECRET_FILE} | grep DB_PASSWORD | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def db_username = sh(script: 'cat ${SECRET_FILE} | grep DB_USERNAME | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_clean_session = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLEAN_SESSION | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_client_id = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLIENT_ID | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_cluster_url = sh(script: 'cat ${SECRET_FILE} | grep MQTT_CLUSTER_URL | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_keepalive = sh(script: 'cat ${SECRET_FILE} | grep MQTT_KEEPALIVE | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_password = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PASSWORD | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_port = sh(script: 'cat ${SECRET_FILE} | grep MQTT_PORT | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
-                    def mqtt_username = sh(script: 'cat ${SECRET_FILE} | grep MQTT_USERNAME | awk -F "=" \'{for(i=2; i<=NF; i++) printf "%s ", $i}\'', returnStdout: true).trim()
+                        export DB_COLLECTION_NAME="${myarray[DB_COLLECTION_NAME]}"
+                        export DB_NAME="${myarray[DB_NAME]}"
+                        export DB_PASSWORD="${myarray[DB_PASSWORD]}"
+                        export DB_USERNAME="${myarray[DB_USERNAME]}"
+                        export MQTT_CLEAN_SESSION="${myarray[MQTT_CLEAN_SESSION]}"
+                        export MQTT_CLIENT_ID="${myarray[MQTT_CLIENT_ID]}"
+                        export MQTT_CLUSTER_URL="${myarray[MQTT_CLUSTER_URL]}"
+                        export MQTT_KEEPALIVE="${myarray[MQTT_KEEPALIVE]}"
+                        export MQTT_PASSWORD="${myarray[MQTT_PASSWORD]}"
+                        export MQTT_PORT="${myarray[MQTT_PORT]}"
+                        export MQTT_USERNAME="${myarray[MQTT_USERNAME]}"
+                    '''
+                }
 
-                    sh 'echo ${mqtt_port}'
-                    def customEnv = [
-                        "DB_COLLECTION_NAME=${db_collection_name}",
-                        "DB_NAME=${db_name}",
-                        "DB_PASSWORD=${db_password}",
-                        "DB_USERNAME=${db_username}",
-                        "MQTT_CLEAN_SESSION=${mqtt_clean_session}",
-                        "MQTT_CLIENT_ID=${mqtt_client_id}",
-                        "MQTT_CLUSTER_URL=${mqtt_cluster_url}",
-                        "MQTT_KEEPALIVE=${mqtt_keepalive}",
-                        "MQTT_PASSWORD=${mqtt_password}",
-                        "MQTT_PORT=${mqtt_port}",
-                        "MQTT_USERNAME=${mqtt_username}"
-                    ]
-
-                    dir(env.REPO_FOLDER_NAME) {
-
-                        app.inside("-e ${customEnv.join(' -e ')} -p 8008:8008") {
-                            dir('main') {
-                                sh 'ls -a'
-                                sh 'pwd'
-                                sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
-                            }
+                dir(env.REPO_FOLDER_NAME) {
+                    app.inside("-p 8008:8008") {
+                        dir('main') {
+                            sh 'ls -a'
+                            sh 'pwd'
+                            sh "python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml"
                         }
                     }
                 }
             }
         }
+
+
 
         stage('Push Docker Image') {
             steps {
