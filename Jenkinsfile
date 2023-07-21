@@ -186,8 +186,7 @@ pipeline {
                  echo "Pushing the image to docker hub"
                  def localImage = "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
 
-                 // pcheajra is my username in the DockerHub
-                 // You can use your username
+                 // username in the DockerHub
                  def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
 
                  // Create a tag that going to push into DockerHub
