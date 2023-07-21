@@ -228,17 +228,17 @@ pipeline {
 //            }
 //        }
 
-        stage('Send Email Notification') {
-            steps {
-                echo 'Sending email notification...'
-                emailext(
-                    subject: "Pipeline Name: ${env.JOB_NAME} (Duration: ${currentBuild.durationString})",
-                    body: "Build completed successfully! Here are the build details:",
-                    to: 'rsemihkoca@outlook.com',
-                    attachLog: true,
-                    attachmentsPattern: 'reports/**/*'
-                )
-            }
-        }
+//        stage('Send Email Notification') {
+//            steps {
+//                echo 'Sending email notification...'
+//                emailext(
+//                    subject: "Pipeline Name: ${env.JOB_NAME} (Duration: ${currentBuild.durationString})",
+//                    body: "Build completed successfully! Here are the build details:",
+//                    to: 'rsemihkoca@outlook.com',
+//                    attachLog: true,
+//                    attachmentsPattern: 'reports/**/*'
+//                )
+//            }
+//        }
     }
 }
