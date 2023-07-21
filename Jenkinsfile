@@ -125,24 +125,23 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Test Docker Image') {
             steps {
-                echo 'Building Docker Image...'
+                echo 'Building Test Docker Image...'
                 script {
-                    // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
-                    dir(env.REPO_FOLDER_NAME) {
-                        sh 'ls -a'
-                        sh 'pwd'
-                        def dockerImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "-f Dockerfile .")
-                    }
+                    def dockerImage = docker.build(
+                        "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test",
+                        "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target test-image ."
+                    )
                 }
             }
         }
 
+
         stage('Run Docker Image with Tests') {
             steps {
                 script {
-                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test")
 
                     // Jenkins credentials binding
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
@@ -180,11 +179,12 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Final Image') {
             steps {
                script {
                  echo "Pushing the image to docker hub"
-                 def localImage = "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
+
+                 def localImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target runtime-image .")
 
                  // username in the DockerHub
                  def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
