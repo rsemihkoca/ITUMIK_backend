@@ -210,23 +210,23 @@ pipeline {
         }
 
 
-        stage('Generate Cobertura Report') {
-            steps {
-                echo 'Generating Cobertura Report...'
-                dir(env.REPO_FOLDER_NAME) {
-                    sh 'cobertura-report.sh'
-                }
-            }
-        }
-
-        stage('Generate JUnit Report') {
-            steps {
-                echo 'Generating JUnit Report...'
-                dir(env.REPO_FOLDER_NAME) {
-                    sh 'junit-report.sh'
-                }
-            }
-        }
+//        stage('Generate Cobertura Report') {
+//            steps {
+//                echo 'Generating Cobertura Report...'
+//                dir(env.REPO_FOLDER_NAME) {
+//                    sh 'cobertura-report.sh'
+//                }
+//            }
+//        }
+//
+//        stage('Generate JUnit Report') {
+//            steps {
+//                echo 'Generating JUnit Report...'
+//                dir(env.REPO_FOLDER_NAME) {
+//                    sh 'junit-report.sh'
+//                }
+//            }
+//        }
 
         stage('Send Email Notification') {
             steps {
