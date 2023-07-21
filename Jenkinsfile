@@ -203,7 +203,7 @@ pipeline {
 
                  // Create a tag that going to push into DockerHub
                  sh "docker tag ${localImage} ${repositoryName} "
-                 docker.withRegistry("", "DockerHubCredentials") {
+                 docker.withRegistry("", "DOCKERHUB_CREDENTIALS_ID") {
                    def app = docker.image("${repositoryName}");
                    app.push()
                  }
