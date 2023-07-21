@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-
+# Do not change alias names, they are used in the jenkins pipeline
 # Builder stage
 FROM python:3.10-alpine as compile-image
 
