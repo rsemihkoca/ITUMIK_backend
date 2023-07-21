@@ -182,17 +182,36 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                echo 'Pushing Docker Image...'
-                script {
-//                     withCredentials([usernamePassword( credentialsId: 'DOCKERHUB_CREDENTIALS_ID', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                        def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
-                        withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: 'https://index.docker.io/v1/']) {
-                            app.push() // Docker imajını Docker Hub'a gönderin
+//                 echo 'Pushing Docker Image...'
+//                 script {
+// //                     withCredentials([usernamePassword( credentialsId: 'DOCKERHUB_CREDENTIALS_ID', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+//                         def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}")
+//                         withDockerRegistry([credentialsId: 'DOCKERHUB_CREDENTIALS_ID', url: 'https://index.docker.io/v1/']) {
+//                             app.push() // Docker imajını Docker Hub'a gönderin
+//
+//
+//
+//                     }
+//                 }
+               script {
+                 echo "Pushing the image to docker hub"
+                 def localImage = "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
 
-                    }
-                }
+                 // pcheajra is my username in the DockerHub
+                 // You can use your username
+                 def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
+
+                 // Create a tag that going to push into DockerHub
+                 sh "docker tag ${localImage} ${repositoryName} "
+                 docker.withRegistry("", "DockerHubCredentials") {
+                   def app = docker.image("${repositoryName}");
+                   app.push()
+                 }
+               }
             }
         }
+
+
 
         stage('Generate Cobertura Report') {
             steps {
