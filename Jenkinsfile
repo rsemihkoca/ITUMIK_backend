@@ -1,3 +1,5 @@
+#!groovy
+
 pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
@@ -131,13 +133,12 @@ pipeline {
                 script {
                     // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
                     dir(env.REPO_FOLDER_NAME) {
-                        sh 'ls -a'
-                        sh 'pwd'
-                        def dockerImage = docker.build(
-                        "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test",
-                        "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target test-image ."
-                        }
-                    )
+                    sh 'ls -a'
+                    sh 'pwd'
+                    def dockerImage = docker.build(
+                    "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test",
+                    "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target test-image .")
+                    }
                 }
             }
         }
@@ -187,19 +188,22 @@ pipeline {
         stage('Push Final Image') {
             steps {
                script {
-                 echo "Pushing the image to docker hub"
+                     dir(env.REPO_FOLDER_NAME) {
 
-                 def localImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target runtime-image .")
+                     echo "Pushing the image to docker hub"
 
-                 // username in the DockerHub
-                 def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
+                     def localImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target runtime-image .")
 
-                 // Create a tag that going to push into DockerHub
-                 sh "docker tag ${localImage} ${repositoryName} "
-                 docker.withRegistry("", "DOCKERHUB_CREDENTIALS_ID") {
-                   def app = docker.image("${repositoryName}");
-                   app.push()
-                 }
+                     // username in the DockerHub
+                     def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
+
+                     // Create a tag that going to push into DockerHub
+                     sh "docker tag ${localImage} ${repositoryName} "
+                     docker.withRegistry("", "DOCKERHUB_CREDENTIALS_ID") {
+                       def app = docker.image("${repositoryName}");
+                       app.push()z
+                     }
+                  }
                }
             }
         }
