@@ -147,7 +147,7 @@ pipeline {
                     // Jenkins credentials binding
                     withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
                         script {
-                            sh "cat \"\$ENV_VALUES_FILE\""
+                            //sh "cat \"\$ENV_VALUES_FILE\""
                             def envValues = readFile("${ENV_VALUES_FILE}")
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" } .join(" ")
                             println valuesArray
@@ -157,7 +157,7 @@ pipeline {
                                     dir('main') {
                                         sh 'ls -a'
                                         sh 'pwd'
-                                        sh 'python -c "import os; print(os.environ[\'DB_PASSWORD\'])"'
+                                        //sh 'python -c "import os; print(os.environ[\'DB_PASSWORD\'])"'
                                         //sh 'python -c "import os; [print(key, \'=\', value) for key, value in os.environ.items() if key != \'PATH\']"'
 
                                         sh """
