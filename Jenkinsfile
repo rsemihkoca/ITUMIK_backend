@@ -189,19 +189,20 @@ pipeline {
             steps {
                script {
                      dir(env.REPO_FOLDER_NAME) {
+                         echo "Building the final image"
+                         docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target runtime-image .")
 
-                     echo "Pushing the image to docker hub"
+                         echo "Pushing the image to docker hub"
+                         def localImage = "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
 
-                     def localImage = docker.build("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}", "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target runtime-image .")
+                         // username in the DockerHub
+                         def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
 
-                     // username in the DockerHub
-                     def repositoryName = "${AUTHOR_LOGIN}/${localImage}"
-
-                     // Create a tag that going to push into DockerHub
-                     sh "docker tag ${localImage} ${repositoryName} "
-                     docker.withRegistry("", "DOCKERHUB_CREDENTIALS_ID") {
-                       def app = docker.image("${repositoryName}");
-                       app.push()z
+                         // Create a tag that going to push into DockerHub
+                         sh "docker tag ${localImage} ${repositoryName} "
+                         docker.withRegistry("", "DOCKERHUB_CREDENTIALS_ID") {
+                           def app = docker.image("${repositoryName}");
+                           app.push()
                      }
                   }
                }
