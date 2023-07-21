@@ -129,9 +129,14 @@ pipeline {
             steps {
                 echo 'Building Test Docker Image...'
                 script {
-                    def dockerImage = docker.build(
+                    // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
+                    dir(env.REPO_FOLDER_NAME) {
+                        sh 'ls -a'
+                        sh 'pwd'
+                        def dockerImage = docker.build(
                         "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test",
                         "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target test-image ."
+                        }
                     )
                 }
             }
