@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: rsemihkoca/mik_backend:v0.1.0-beta
+          ports:
+            - containerPort: 8008
+          env:
+            - name: DB_COLLECTION_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DB_COLLECTION_NAME
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DB_PASSWORD
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DB_USERNAME
+            - name: MQTT_CLEAN_SESSION
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_CLEAN_SESSION
+            - name: MQTT_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_CLIENT_ID
+            - name: MQTT_CLUSTER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_CLUSTER_URL
+            - name: MQTT_KEEPALIVE
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_KEEPALIVE
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_PASSWORD
+            - name: MQTT_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_PORT
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MQTT_USERNAME
