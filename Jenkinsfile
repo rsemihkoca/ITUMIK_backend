@@ -11,7 +11,7 @@ pipeline {
                 [key: 'payload', value: '$']
             ],
             causeString: 'GitHub event',
-            token: 'TOKEN',
+            token: 'TOKEN_backend',
             printContributedVariables: false,
             printPostContent: false,
             silentResponse: false
