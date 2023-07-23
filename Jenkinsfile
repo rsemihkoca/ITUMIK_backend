@@ -18,41 +18,6 @@ pipeline {
         )
     }
     stages {
-        stage('Print PWD') {
-            steps {
-                echo 'Current working directory: ' + pwd()
-            }
-        }
-        stage('Clean Workspace') {
-            steps {
-                script {
-                    // Delete the workspace directory
-                    deleteDir()
-                }
-            }
-        }
-        stage('Check Docker Installation') {
-            steps {
-                script {
-                    try {
-                        // Check Docker version
-                        sh 'docker --version'
-
-                        // Check Docker info
-                        sh 'docker info'
-
-                        // List Docker images
-                        sh 'docker images'
-
-                        // List Docker containers
-                        sh 'docker ps -a'
-                    } catch (Exception e) {
-                        // Handle any errors or failures
-                        error("Failed to check Docker installation: ${e.getMessage()}")
-                    }
-                }
-            }
-        }
 
         stage('Parse Payload') {
             steps {
@@ -86,6 +51,42 @@ pipeline {
                     env.BRANCH_NAME = json.release.target_commitish
                     env.REPO_FOLDER_NAME = json.repository.name
                     env.DOCKER_TAG_NAME = json.release.tag_name
+                }
+            }
+        }
+
+        stage('Print PWD') {
+            steps {
+                echo 'Current working directory: ' + pwd()
+            }
+        }
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    // Delete the workspace directory
+                    deleteDir()
+                }
+            }
+        }
+        stage('Check Docker Installation') {
+            steps {
+                script {
+                    try {
+                        // Check Docker version
+                        sh 'docker --version'
+
+                        // Check Docker info
+                        sh 'docker info'
+
+                        // List Docker images
+                        sh 'docker images'
+
+                        // List Docker containers
+                        sh 'docker ps -a'
+                    } catch (Exception e) {
+                        // Handle any errors or failures
+                        error("Failed to check Docker installation: ${e.getMessage()}")
+                    }
                 }
             }
         }
