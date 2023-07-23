@@ -127,7 +127,65 @@ pipeline {
             }
         }
 
-        stage('Build Final Image') {
+        stage('Build Test Docker Image') {
+            steps {
+                echo 'Building Test Docker Image...'
+                script {
+                    // Image name: <repo-name>:<tag-name> (e.g. myimage:latest) must be lowercase
+                    dir(env.REPO_FOLDER_NAME) {
+                    sh 'ls -a'
+                    sh 'pwd'
+                    def dockerImage = docker.build(
+                    "${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test",
+                    "--file Dockerfile --build-arg DOCKER_BUILDKIT=1 --target test-image .")
+                    }
+                }
+            }
+        }
+
+
+        stage('Run Docker Image with Tests') {
+            steps {
+                script {
+                    def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test")
+
+                    // Jenkins credentials binding
+                    withCredentials([file(credentialsId: 'SECRET_FILE', variable: 'ENV_VALUES_FILE')]) {
+                        script {
+                            //sh "cat \"\$ENV_VALUES_FILE\""
+                            def envValues = readFile("${ENV_VALUES_FILE}")
+                            def valuesArray = envValues.split('\n').collect { "-e ${it}" } .join(" ")
+                            // println valuesArray
+                            dir(env.REPO_FOLDER_NAME) {
+                                app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") {
+                                    c ->
+                                    dir('main') {
+                                        sh 'ls -a'
+                                        sh 'pwd'
+                                        //sh 'python -c "import os; print(os.environ[\'DB_PASSWORD\'])"'
+                                        //sh 'python -c "import os; [print(key, \'=\', value) for key, value in os.environ.items() if key != \'PATH\']"'
+
+                                        sh """
+                                        if grep -q docker /proc/1/cgroup; then
+                                            echo inside docker
+                                        else
+                                            echo on host
+                                            exit
+                                        fi
+                                        """
+                                        sh """
+                                        python3 -m pytest * -v -o junit_family=xunit1 --cov=../main --cov-report xml:../reports/coverage-cpu.xml --cov-report html:../reports/cov_html-cpu --junitxml=../reports/results-cpu.xml
+                                        """
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Push Final Image') {
             steps {
                script {
                      dir(env.REPO_FOLDER_NAME) {
