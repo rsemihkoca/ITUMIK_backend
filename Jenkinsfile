@@ -35,7 +35,8 @@ pipeline {
 
                     if (json.action != 'published' || !json.release) {
                         echo "Skipping build as the action is not 'published' or release information is missing."
-                        return
+                        currentBuild.result = 'ABORTED'
+                        error('Pipeline aborted.')
                     }
 
                     echo 'Release URL: ' + json.release.url
