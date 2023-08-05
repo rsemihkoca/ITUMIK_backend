@@ -5,3 +5,4 @@ Cobertura
 Docker
 Generic Webhook Trigger
 locale
+Docker Pipeline
