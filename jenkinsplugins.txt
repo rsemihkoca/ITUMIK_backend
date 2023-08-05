@@ -3,5 +3,5 @@ pipeline-utility-steps
 Blue Ocean
 Cobertura
 Docker
-Generic Webhook Trigger Plugin
-Kubernetes
+Generic Webhook Trigger
+locale
