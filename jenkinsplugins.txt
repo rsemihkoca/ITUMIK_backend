@@ -6,3 +6,4 @@ Docker
 Generic Webhook Trigger
 locale
 Docker Pipeline
+ssh-agent
