@@ -11,8 +11,8 @@ load_dotenv(find_dotenv())
 
 from fastapi.testclient import TestClient
 from main.factory import create_app
-from lib.controller import ClientController
 from lib.configs.data import TestPayload
+from lib.utils.configs import Configs
 from lib.logging.custom_logging import CustomizeLogger
 from pathlib import Path
 # Inıtialize app
@@ -44,9 +44,8 @@ class SubscribeTests(unittest.TestCase):
         """
         @app.controller.subscribe()
         """
-
-        subscription_topics = app.controller.desk_manager.get_subscribes()
-        app.controller.subscribe(subscription_topics)
+        subscription_topics = [Configs.MQTT_TOPIC]
+        app.controller.subscribe()
         subscribed_topics = app.controller.mqtt_client.client.subscribed_topics
         self.assertEqual(subscribed_topics, subscription_topics)
     def test_get_status(self):

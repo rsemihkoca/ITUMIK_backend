@@ -5,21 +5,18 @@ from lib.utils.mqtt_client import MQTTBrokerClient
 from lib.utils.mongo_client import MongoDBClient
 from lib.validators import mqtt_validators, mongo_validators
 from lib.configs.constants import Constants, DBConstants
-from lib.configs.desk import DeskManager
-from lib.logging.custom_logging import CustomizeLogger
+from lib.utils.configs import Configs
 from pathlib import Path
 
 log_config_path = Path(__file__).resolve().parent / "logging" / "logging_config.json"
 floor_config_path = Path(__file__).resolve().parent.parent / "floor-config.json"
 desk_config_path = Path(__file__).resolve().parent.parent / "desk-config.json"
 class ClientController:
-    """
-    ClientManager yazılmalı !!!!!!!
-    """
+
     def __init__(self, logger):
         # self.logger = CustomizeLogger.make_logger(log_config_path)
         self.logger = logger
-        self.desk_manager = DeskManager(desk_config_path)
+        self.desk = {Configs.MQTT_TOPIC: {"TL": 0, "TR": 0, "BL": 0, "BR": 0}}
         self.mongo_client = MongoDBClient(self.logger) if mongo_validators.check_mongodb_parameters() else None
         self.mqtt_client = MQTTBrokerClient(self.logger) if mqtt_validators.check_mqtt_parameters() else None
         self.mqtt_client.client.on_message = self.on_message
@@ -56,14 +53,13 @@ class ClientController:
             return
 
         new_values = json.loads(msg.payload)
-        floor, desk = msg.topic.split("/")
-        existing_keys = self.desk_manager.data[floor][desk].keys()
+        existing_keys = "TL TR BL BR".split(" ")
 
-        if not existing_keys == new_values.keys():
+        if not existing_keys == [*new_values.keys()]:
             self.logger.error("Keys are not equal")
             return
 
-        self.desk_manager.data[floor][desk] = new_values
+        self.desk[Configs.MQTT_TOPIC] = new_values
         self.update_document(DBConstants.TOPIC, msg.topic, new_values)
         self.logger.info(f"Updated {msg.topic} with a received message")
 
