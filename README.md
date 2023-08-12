@@ -35,7 +35,7 @@ conda create -n py310 python=3.10 ;  conda activate py310 ;  pip install -r requ
 docker build -f DockerFile -t mik_backend . && docker run --rm -i -t -p 8008:8008 mik_backend
 TODO:
 * replace error messages with custom ones
-* example: raise CustomError(ErrorCodes.mik_ec_001, ErrorMessages.mik_ec_001_MESSAGE, 422, parameters=[Configs.DB_USERNAME, ***REMOVED***])
+* example: raise CustomError(ErrorCodes.mik_ec_001, ErrorMessages.mik_ec_001_MESSAGE, 422, parameters=[Configs.DB_USERNAME, "python_client"])
 
 *Hata alsa da örneğin invalid json dinlemeye devam etmeli benzer yapı on_message'de yapıldı mesaj yanlış olsa da dinlemeye devam ediyor kullanıcıyı bilgilendirmek için log atılıyor
 
