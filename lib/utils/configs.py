@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     DB_NAME: str = Field(default=os.getenv("DB_NAME").strip())
     DB_COLLECTION_NAME: str = Field(default=os.getenv("DB_COLLECTION_NAME").strip())
 
+
+
     # MongoDB connection string
     @property
     def DB_CONNECTION_STRING(self) -> str:
