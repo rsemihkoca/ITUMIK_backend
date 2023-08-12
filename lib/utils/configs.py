@@ -11,8 +11,6 @@ class Settings(BaseSettings):
     MQTT_TOPIC: str = Field(default=os.getenv("MQTT_TOPIC").strip())
     MQTT_CLUSTER_URL: str = Field(default=os.getenv("MQTT_CLUSTER_URL").strip())
     MQTT_PORT: int = Field(default=int(os.getenv("MQTT_PORT").strip()))
-    MQTT_KEEPALIVE: int = Field(default=int(os.getenv("MQTT_KEEPALIVE").strip()))
-    MQTT_CLEAN_SESSION: bool = Field(default=bool(os.getenv("MQTT_CLEAN_SESSION").strip()))
 
     DB_USERNAME: str = Field(default=os.getenv("DB_USERNAME").strip())
     DB_PASSWORD: str = Field(default=os.getenv("DB_PASSWORD").strip())
