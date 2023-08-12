@@ -14,12 +14,6 @@ def check_mqtt_parameters():
         raise Exception("MQTT_CLUSTER_URL is not defined!")
     if Configs.MQTT_PORT is None:
         raise Exception("MQTT_PORT is not defined!")
-    if Configs.MQTT_CLIENT_ID is None:
-        raise Exception("MQTT_CLIENT_ID is not defined!")
-    if Configs.MQTT_KEEPALIVE is None:
-        raise Exception("MQTT_KEEPALIVE is not defined!")
-    if Configs.MQTT_CLEAN_SESSION is None:
-        raise Exception("MQTT_CLEAN_SESSION is not defined!")
 
     return True
 
