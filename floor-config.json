@@ -1,54 +1,54 @@
 {
   "Floor00": {
     "Desk01": {
-      "Chair001": false,
-      "Chair002": false,
-      "Chair003": false,
-      "Chair004": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk02": {
-      "Chair005": false,
-      "Chair006": false,
-      "Chair007": false,
-      "Chair008": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk03": {
-      "Chair009": false,
-      "Chair010": false,
-      "Chair011": false,
-      "Chair012": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk04": {
-      "Chair013": false,
-      "Chair014": false,
-      "Chair015": false,
-      "Chair016": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     }
   },
   "Floor01": {
     "Desk05": {
-      "Chair017": false,
-      "Chair018": false,
-      "Chair019": false,
-      "Chair020": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk06": {
-      "Chair021": false,
-      "Chair022": false,
-      "Chair023": false,
-      "Chair024": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk07": {
-      "Chair025": false,
-      "Chair026": false,
-      "Chair027": false,
-      "Chair028": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     },
     "Desk08": {
-      "Chair029": false,
-      "Chair030": false,
-      "Chair031": false,
-      "Chair032": false
+      "TL": 0,
+      "TR": 0,
+      "BL": 1,
+      "BR": 2
     }
   }
 }
