@@ -146,7 +146,7 @@ pipeline {
         }
 
 
-        stage('Run Docker Image with Tests') {
+        stage('Unit Tests') {
             steps {
                 script {
                     def app = docker.image("${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}-test")
