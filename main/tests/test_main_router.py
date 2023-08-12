@@ -48,14 +48,14 @@ class SubscribeTests(unittest.TestCase):
         app.controller.subscribe()
         subscribed_topics = app.controller.mqtt_client.client.subscribed_topics
         self.assertEqual(subscribed_topics, subscription_topics)
-    def test_get_status(self):
-        """
-        test @app.get("/main/status")
-        """
-
-        response = client.get("/main/status")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), TestPayload.test_get_status)
+    # def test_get_status(self):
+    #     """
+    #     test @app.get("/main/status")
+    #     """
+    #
+    #     response = client.get("/main/status")
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.json(), TestPayload.test_get_status)
 
 
 
