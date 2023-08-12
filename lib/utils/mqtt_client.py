@@ -69,12 +69,12 @@ class MQTTBrokerClient:
                 self.wait_for(self.client, "SUBACK")
                 self.logger.info(f"Subscribed to topic: {topic}")
                 self.client.subscribed_topics.append(topic)
-            # elif isinstance(topic, list):
-            #     for t in topic:
-            #         self.client.subscribe(t, qos=0)
-            #         self.wait_for("SUBACK")
-            #         self.logger.info(f"Subscribed to topic: {t}")
-            #         self.client.subscribed_topics.append(t)
+            elif isinstance(topic, list):
+                for t in topic:
+                    self.client.subscribe(t, qos=0)
+                    self.wait_for("SUBACK")
+                    self.logger.info(f"Subscribed to topic: {t}")
+                    self.client.subscribed_topics.append(t)
             else:
                 self.logger.error("Topic must be string or list of strings")
                 return
