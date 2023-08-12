@@ -11,7 +11,7 @@ load_dotenv(find_dotenv())
 
 from fastapi.testclient import TestClient
 from main.factory import create_app
-from lib.configs.data import TestPayload
+# from lib.configs.data import TestPayload
 from lib.utils.configs import Configs
 from lib.logging.custom_logging import CustomizeLogger
 from pathlib import Path
