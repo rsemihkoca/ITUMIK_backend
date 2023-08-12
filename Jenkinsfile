@@ -157,7 +157,7 @@ pipeline {
                             //sh "cat \"\$ENV_VALUES_FILE\""
                             def envValues = readFile("${ENV_VALUES_FILE}")
                             def valuesArray = envValues.split('\n').collect { "-e ${it}" } .join(" ")
-                            // println valuesArray
+                            println valuesArray
                             dir(env.REPO_FOLDER_NAME) {
                                 app.inside("--env-file \"\$ENV_VALUES_FILE\" -d --rm -p 8008:8008") {
                                     c ->
