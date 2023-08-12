@@ -44,7 +44,7 @@ class SubscribeTests(unittest.TestCase):
         """
         @app.controller.subscribe()
         """
-        subscription_topics = Configs.MQTT_TOPIC
+        subscription_topics = [Configs.MQTT_TOPIC]
         app.controller.subscribe(subscription_topics)
         subscribed_topics = app.controller.mqtt_client.client.subscribed_topics
         self.assertEqual(subscribed_topics, subscription_topics)

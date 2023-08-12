@@ -72,7 +72,7 @@ class MQTTBrokerClient:
             elif isinstance(topic, list):
                 for t in topic:
                     self.client.subscribe(t, qos=0)
-                    self.wait_for("SUBACK")
+                    self.wait_for(self.client, "SUBACK")
                     self.logger.info(f"Subscribed to topic: {t}")
                     self.client.subscribed_topics.append(t)
             else:
