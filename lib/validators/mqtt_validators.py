@@ -31,9 +31,9 @@ def check_message_is_valid(msg_payload):
         logger.error("Payload is not JSON nor JSON-like")
         return False
     else:
-        # check values are true or false only:
+        # check values are non-negative only:
         for key in new_keys:
-            if not json.loads(msg_payload)[key] in [True, False]:
-                logger.error("Values are not boolean")
+            if not json.loads(msg_payload)[key] in [0, 1, 2]:
+                logger.error("Values are not 0, 1 or 2")
                 return False
         return True

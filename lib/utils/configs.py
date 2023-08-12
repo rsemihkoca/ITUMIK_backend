@@ -1,4 +1,3 @@
-from lib.utils.helper import get_topic_name
 from pydantic import BaseSettings, Field
 import logging
 import os
