@@ -8,7 +8,7 @@ class MQTTBrokerClient:
     def __init__(self, logger):
         self.logger = logger
         #TODO: CLEAN SESSION: Remove all subscriptions and messages when client disconnects, set True if you want to keep messages and subscriptions
-        self.client = paho.Client(client_id=Configs.MQTT_CLIENT_ID, clean_session=Configs.MQTT_CLEAN_SESSION, userdata=None, protocol=paho.MQTTv31)
+        self.client = paho.Client(client_id=Configs.MQTT_TOPIC, userdata=None, protocol=paho.MQTTv31)
         self.client.on_connect = self.on_connect
         self.client.on_subscribe = self.on_subscribe
         self.client.on_publish = self.on_publish
@@ -26,7 +26,7 @@ class MQTTBrokerClient:
     def __connect(self, username, password, cluster_url, port):
         try:
             self.client.username_pw_set(username, password)
-            self.client.connect(cluster_url, port, keepalive=Configs.MQTT_KEEPALIVE)
+            self.client.connect(cluster_url, port, keepalive=True)
         except Exception as e:
             self.logger.error(f"Failed to connect to MQTT Broker: {cluster_url}:{port}")
             raise e
