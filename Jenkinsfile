@@ -101,7 +101,7 @@ pipeline {
 
                         // Change the current directory to the new directory
                         dir(env.REPO_FOLDER_NAME) {
-                            withCredentials([sshUserPrivateKey(credentialsId: 'GITHUB_CREDENTIAL_ID', keyFileVariable: 'KEY')]) {
+                            withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIAL_ID', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                                 checkout([
                                     $class: 'GitSCM',
                                     branches: [[name: "*/${env.BRANCH_NAME}"]],
