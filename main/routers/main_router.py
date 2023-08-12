@@ -10,14 +10,6 @@ from lib.schemas.responses import SUCCESS_RESPONSE_DATA
 router = APIRouter()
 
 
-@router.get("/status")
-async def status(request: Request):
-    status = request.app.controller.desk_manager.get_status()
-    return SUCCESS_RESPONSE_DATA(status)
-
-@router.get('/custom-logger')
-def customize_logger(request: Request):
-    request.app.controller.logger.info("Here Is Your Info Log")
-    a = 1 / 0
-    request.app.controller.logger.error("Here Is Your Error Log")
-    return {'data': "Successfully Implemented Custom Log"}
+@router.get("/health")
+async def status():
+    return SUCCESS_RESPONSE_DATA("OK")
