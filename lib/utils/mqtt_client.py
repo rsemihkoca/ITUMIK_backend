@@ -26,7 +26,7 @@ class MQTTBrokerClient:
     def __connect(self, username, password, cluster_url, port):
         try:
             self.client.username_pw_set(username, password)
-            self.client.connect(cluster_url, port, keepalive=15)
+            self.client.connect(cluster_url, port, keepalive=10)
         except Exception as e:
             self.logger.error(f"Failed to connect to MQTT Broker: {cluster_url}:{port}")
             raise e
