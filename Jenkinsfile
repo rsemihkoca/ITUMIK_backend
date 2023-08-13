@@ -125,7 +125,7 @@ pipeline {
             steps {
                 script {
                     sh "docker image prune -f"
-                    sh "docker images | awk '/mik_backend|mik_frontend/ { print $3 }' | xargs docker rmi"
+                    sh 'docker images | awk \'/mik_backend|mik_frontend/ { print $3 }\' | xargs docker rmi'
                 }
             }
         }
