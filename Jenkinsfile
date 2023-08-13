@@ -219,7 +219,7 @@ pipeline {
                     def manifestRepoURL = 'https://github.com/rsemihkoca/ITUMIK_manifests.git'
                     def manifestRepoFolderName = 'ITUMIK_manifests'
                     def manifestFolder = 'backend'
-                    def manifestFile = "${manifestRepoFolderName}/${manifestFolder}/frontend-application.yaml"
+                    def manifestFile = "${manifestRepoFolderName}/${manifestFolder}/deployment.yaml"
                     def newImage = "${env.AUTHOR_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
 
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIAL_ID', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
