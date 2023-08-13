@@ -211,36 +211,63 @@ pipeline {
             }
         }
 
+        stage('Update Manifests File') {
+            steps {
+                script {
+                    // Define manifest repo and folder details
+                    def manifestRepoURL = 'https://github.com/rsemihkoca/ITUMIK_manifests.git'
+                    def manifestRepoFolderName = 'ITUMIK_manifests'
+                    def manifestFolder = 'backend'
+                    def manifestFile = "${manifestRepoFolderName}/${manifestFolder}/frontend-application.yaml"
+                    def newImage = "${env.AUTHOR_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}:${env.DOCKER_TAG_NAME}"
 
-//        stage('Generate Cobertura Report') {
-//            steps {
-//                echo 'Generating Cobertura Report...'
-//                dir(env.REPO_FOLDER_NAME) {
-//                    sh 'cobertura-report.sh'
-//                }
-//            }
-//        }
-//
-//        stage('Generate JUnit Report') {
-//            steps {
-//                echo 'Generating JUnit Report...'
-//                dir(env.REPO_FOLDER_NAME) {
-//                    sh 'junit-report.sh'
-//                }
-//            }
-//        }
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIAL_ID', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
 
-//        stage('Send Email Notification') {
-//            steps {
-//                echo 'Sending email notification...'
-//                emailext(
-//                    subject: "Pipeline Name: ${env.JOB_NAME} (Duration: ${currentBuild.durationString})",
-//                    body: "Build completed successfully! Here are the build details:",
-//                    to: 'rsemihkoca@outlook.com',
-//                    attachLog: true,
-//                    attachmentsPattern: 'reports/**/*'
-//                )
-//            }
-//        }
+                        sh "git clone ${manifestRepoURL}"
+
+                        // Check if manifest file exists
+                        if (fileExists(manifestFile)) {
+                            echo "Updating manifest file with new image: ${newImage}"
+
+                            // Read the manifest file
+                            def manifestContent = readFile(manifestFile)
+
+                            // Replace the old image with the new image
+                            manifestContent = manifestContent.replaceAll("${env.AUTHOR_LOGIN}/${env.REPO_FOLDER_NAME.toLowerCase()}:v[0-9\\\\.]+", newImage)
+
+                            // Write the updated content back to the file
+                            writeFile(file: manifestFile, text: manifestContent)
+
+                            echo "Manifest file updated successfully."
+
+                            // Optional: Push changes back to the repository
+                            dir(manifestRepoFolderName) {
+                                sh "git config user.email rsemihkoca@outlook.com"
+                                sh "git config user.name rsemihkoca"
+                                sh "git remote set-url origin ${manifestRepoURL}"
+                                sh "git remote -v"
+                                sh "git add ."
+                                sh "git commit -m '${newImage}'"
+
+                                // Use GIT_ASKPASS to provide the token instead of embedding in URL
+                                sh """
+                                   # Set up GIT_ASKPASS
+                                   echo '#!/bin/sh' > askpass.sh
+                                   echo 'echo \$GITHUB_TOKEN' >> askpass.sh
+                                   chmod +x askpass.sh
+                                   export GIT_ASKPASS="\$PWD/askpass.sh"
+
+                                   git push origin main
+                                """
+                            }
+
+                        } else {
+                            error("Manifest file '${manifestFile}' does not exist.")
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }
