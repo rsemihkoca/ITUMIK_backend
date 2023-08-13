@@ -24,8 +24,21 @@ class ClientController:
 
     #################### MQTT ####################
     def start(self):
-        # Listen incoming messages
-        self.mqtt_client.start()
+
+        try:
+            # Listen incoming messages
+            self.mqtt_client.start()
+
+        except Exception as e:
+            # app.controller.stop()
+            self.logger.error(e)
+            # raise e
+        except KeyboardInterrupt:
+            # app.controller.stop()
+            self.logger.error("KeyboardInterrupt")
+            return
+        else:
+            return {"message": "Successfully Executed!"}
 
     def stop(self):
         try:
